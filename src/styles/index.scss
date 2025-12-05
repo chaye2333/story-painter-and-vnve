@@ -189,3 +189,159 @@ body {
   color: #fff !important;
   font-family: monospace !important;
 }
+
+/* --- New Animations --- */
+
+/* 1. Fade In Up - General Content Entry */
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 2. Slide In Left - Sidebar Entry */
+.animate-slide-in-left {
+  animation: slideInLeft 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 3. Stagger Reveal - For List Items */
+/* Use .animate-stagger > * { animation... } */
+.animate-stagger > * {
+  animation: staggerReveal 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+/* Generate delay loop */
+@for $i from 1 through 10 {
+  .animate-stagger > *:nth-child(#{$i}) {
+    animation-delay: #{$i * 0.05}s;
+  }
+}
+
+@keyframes staggerReveal {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 4. Pulse Glow - For Borders or Important Elements */
+.animate-pulse-glow {
+  animation: pulseGlow 3s infinite ease-in-out;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* 5. Scale In - For Modal/Overlay */
+.animate-scale-in {
+  animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 6. Floating - For decorative elements */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* 7. Glitch Enter - For Titles */
+.animate-glitch-enter {
+  animation: glitchEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+@keyframes glitchEnter {
+  0% { opacity: 0; transform: scale(1.1); clip-path: polygon(0 0, 100% 0, 100% 10%, 0 10%); }
+  20% { clip-path: polygon(0 10%, 100% 10%, 100% 30%, 0 30%); transform: translateX(-5px) scale(1.05); }
+  40% { clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%); transform: translateX(5px) scale(1.02); }
+  60% { clip-path: polygon(0 50%, 100% 50%, 100% 80%, 0 80%); transform: translateX(-2px) scale(1); opacity: 1; }
+  80% { clip-path: polygon(0 80%, 100% 80%, 100% 100%, 0 100%); }
+  100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); transform: scale(1); opacity: 1; }
+}
+
+/* 8. Scanline Sweep - For Containers */
+.animate-scanline-sweep {
+  position: relative;
+  overflow: hidden;
+}
+.animate-scanline-sweep::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: 0;
+  width: 100%;
+  height: 20%;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: scanlineSweep 4s linear infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes scanlineSweep {
+  0% { top: -20%; }
+  100% { top: 120%; }
+}
+
+/* 9. Typing Cursor - For Text */
+.animate-typing {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid white;
+  width: 0;
+  animation: typing 2s steps(30, end) forwards, blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: white }
+}

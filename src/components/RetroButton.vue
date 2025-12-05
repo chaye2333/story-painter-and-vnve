@@ -5,6 +5,9 @@ import { audioManager } from '~/utils/audio';
 const props = defineProps<{
   active?: boolean;
   disabled?: boolean;
+  icon?: boolean;
+  noBorder?: boolean;
+  noGrid?: boolean;
 }>();
 
 const isClicking = ref(false);
@@ -26,27 +29,32 @@ const playClick = () => {
 
 <template>
   <button 
-    class="retro-btn relative group overflow-hidden bg-[#0a0a0a] text-[#e0e0e0] transition-all duration-200 ease-out px-5 py-3 min-w-[120px]"
-    :class="{ 
-      'active': active, 
-      'clicking': isClicking,
-      'disabled': disabled
-    }"
+    class="retro-btn relative group overflow-hidden bg-[#0a0a0a] text-[#e0e0e0] transition-all duration-200 ease-out"
+    :class="[
+      icon ? 'w-10 h-10 p-0 flex items-center justify-center' : 'px-5 py-3 min-w-[120px]',
+      { 
+        'active': active, 
+        'clicking': isClicking,
+        'disabled': disabled
+      }
+    ]"
     :disabled="disabled"
     @mouseenter="playHover"
     @click="playClick"
   >
     <!-- Background Grid Pattern -->
-    <div class="absolute inset-0 opacity-10 pointer-events-none bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:4px_4px]"></div>
+    <div v-if="!noGrid" class="absolute inset-0 opacity-10 pointer-events-none bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:4px_4px]"></div>
 
     <!-- Borders -->
-    <div class="absolute inset-0 border border-[#444] transition-colors duration-300 group-hover:border-[#888] group-hover:shadow-[0_0_8px_rgba(255,255,255,0.2)]"></div>
+    <div v-if="!noBorder" class="absolute inset-0 border border-[#444] transition-colors duration-300 group-hover:border-[#888] group-hover:shadow-[0_0_8px_rgba(255,255,255,0.2)]"></div>
     
     <!-- Corner Brackets -->
-    <div class="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-[#666] transition-all duration-300 group-hover:w-3 group-hover:h-3 group-hover:border-white"></div>
-    <div class="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-[#666] transition-all duration-300 group-hover:w-3 group-hover:h-3 group-hover:border-white"></div>
-    <div class="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-[#666] transition-all duration-300 group-hover:w-3 group-hover:h-3 group-hover:border-white"></div>
-    <div class="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-[#666] transition-all duration-300 group-hover:w-3 group-hover:h-3 group-hover:border-white"></div>
+    <template v-if="!icon">
+      <div class="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-[#666] transition-all duration-300 group-hover:w-3 group-hover:h-3 group-hover:border-white"></div>
+      <div class="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-[#666] transition-all duration-300 group-hover:w-3 group-hover:h-3 group-hover:border-white"></div>
+      <div class="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-[#666] transition-all duration-300 group-hover:w-3 group-hover:h-3 group-hover:border-white"></div>
+      <div class="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-[#666] transition-all duration-300 group-hover:w-3 group-hover:h-3 group-hover:border-white"></div>
+    </template>
 
     <!-- Content -->
     <div class="btn-content relative z-10 flex items-center justify-center gap-2 text-xs font-bold tracking-widest uppercase group-hover:text-white transition-colors">

@@ -19,6 +19,7 @@ class SoundManager {
   private noiseGain: GainNode | null = null;
 
   private isBgmPlaying: boolean = false;
+  private listeners: ((isPlaying: boolean) => void)[] = [];
 
   constructor() {
     try {
@@ -107,6 +108,14 @@ class SoundManager {
     return this.isBgmPlaying;
   }
 
+  public startBgmDirect() {
+    if (!this.context) return;
+    this.ensureContext();
+    if (!this.isBgmPlaying) {
+      this.startBgm();
+    }
+  }
+
   // Generate a simple impulse response for reverb
   private createImpulseResponse(duration: number, decay: number, reverse: boolean): AudioBuffer {
     const sampleRate = this.context!.sampleRate;
@@ -136,10 +145,24 @@ class SoundManager {
     return buffer;
   }
 
+  public get isPlaying(): boolean {
+    return this.isBgmPlaying;
+  }
+
+  public subscribe(listener: (isPlaying: boolean) => void) {
+    this.listeners.push(listener);
+  }
+
+  private notify() {
+    this.listeners.forEach(l => l(this.isBgmPlaying));
+  }
+
   private startBgm() {
     if (!this.context) return;
     this.ensureContext();
     this.stopBgm(); // Ensure clean state
+    this.isBgmPlaying = true;
+    this.notify();
 
     // 1. Master Chain
     this.bgmGain = this.context.createGain();
@@ -152,21 +175,22 @@ class SoundManager {
     this.masterCompressor.attack.value = 0.003;
     this.masterCompressor.release.value = 0.25;
 
-    // 2. Reverb (Brighter, Spacious)
+    // 2. Reverb (Brighter, Spacious, Ethereal)
     this.reverbNode = this.context.createConvolver();
-    this.reverbNode.buffer = this.createImpulseResponse(3, 3, false); // Shorter, cleaner reverb
+    // Increased duration for more ethereal feel
+    this.reverbNode.buffer = this.createImpulseResponse(7, 2, false); 
     
     // Lowpass Filter (Opened up for cheerfulness)
     const lowpass = this.context.createBiquadFilter();
     lowpass.type = 'lowpass';
-    lowpass.frequency.value = 3500; // Higher cutoff for brightness
+    lowpass.frequency.value = 3500; // Lower cutoff for warmer, soothing sound
     lowpass.Q.value = 0.5;
 
-    // Mix dry/wet
+    // Mix dry/wet - increased wet for ethereal feel
     const dryGain = this.context.createGain();
-    dryGain.gain.value = 0.6;
+    dryGain.gain.value = 0.4;
     const wetGain = this.context.createGain();
-    wetGain.gain.value = 0.4;
+    wetGain.gain.value = 0.6;
 
     this.bgmGain.connect(lowpass);
     lowpass.connect(this.masterCompressor);
@@ -187,20 +211,20 @@ class SoundManager {
     this.warbleGain = this.context.createGain();
     
     this.warbleLFO.type = 'sine';
-    this.warbleLFO.frequency.value = 0.1; // Very slow drift
-    this.warbleGain.gain.value = 8; // Reduced detune
+    this.warbleLFO.frequency.value = 0.15; // Slightly faster drift
+    this.warbleGain.gain.value = 10; 
     
     this.warbleLFO.connect(this.warbleGain);
     this.warbleLFO.start();
 
-    // 4. Cheerful Pads (C Major 7 / Add9)
-    // Warm, comforting background
+    // 4. Cheerful Pads (C Major 9 / Add9)
+    // Higher register for ethereal feel
     const padFreqs = [
-      130.81, // C3
-      196.00, // G3
       261.63, // C4
       329.63, // E4
-      493.88  // B4 (Major 7th)
+      392.00, // G4
+      493.88, // B4 (Major 7th)
+      587.33  // D5 (9th)
     ];
 
     const createPad = (freq: number, type: 'sine' | 'triangle', gainScale: number = 1) => {
@@ -217,12 +241,12 @@ class SoundManager {
 
       this.warbleGain.connect(osc.detune);
 
-      // Gentle Breathing LFO
+      // Gentle Breathing LFO - Faster breathing for "bouncing" feel
       lfo.type = 'sine';
-      lfo.frequency.value = 0.05 + (Math.random() * 0.1); 
+      lfo.frequency.value = 0.1 + (Math.random() * 0.2); // Slower, deeper breathing
       
       lfoGain.gain.value = 0.02 * gainScale; 
-      oscGain.gain.value = 0.03 * gainScale; 
+      oscGain.gain.value = 0.02 * gainScale; // Lower base volume for pads
       
       lfo.connect(lfoGain);
       lfoGain.connect(oscGain.gain);
@@ -237,19 +261,35 @@ class SoundManager {
     };
 
     padFreqs.forEach((freq, index) => {
-      createPad(freq, index < 2 ? 'sine' : 'triangle', index < 2 ? 0.8 : 0.5);
+      createPad(freq, 'sine', 0.5);
     });
 
-    // 5. Melody Loop (Wind Chimes / Droplets)
-    // C Major Pentatonic: C, D, E, G, A
+    // 5. Melody Loop (Wind Chimes / Droplets / Bouncing)
+    // C Major Pentatonic extended
     const melodyNotes = [
       523.25, // C5
       587.33, // D5
       659.25, // E5
       783.99, // G5
       880.00, // A5
-      1046.50 // C6
+      1046.50, // C6
+      1174.66, // D6
+      1318.51  // E6
     ];
+
+    // Simple Delay Line for bouncing effect
+    const delayNode = this.context.createDelay();
+    delayNode.delayTime.value = 0.33; // 330ms delay (triplet feel)
+    const delayFeedback = this.context.createGain();
+    delayFeedback.gain.value = 0.5;
+    const delayFilter = this.context.createBiquadFilter();
+    delayFilter.type = 'lowpass';
+    delayFilter.frequency.value = 2500;
+
+    delayNode.connect(delayFeedback);
+    delayFeedback.connect(delayFilter);
+    delayFilter.connect(delayNode);
+    delayNode.connect(this.bgmGain);
 
     const playMelodyNote = () => {
       if (!this.isBgmPlaying || !this.context || !this.bgmGain) return;
@@ -258,24 +298,27 @@ class SoundManager {
       const osc = this.context.createOscillator();
       const gain = this.context.createGain();
 
-      osc.type = 'sine';
+      // Triangle for a bell-like tone
+      osc.type = 'sine'; 
       osc.frequency.value = freq;
       
-      // Envelope: Fast attack, long release
+      // Envelope: Very fast attack, bouncy decay
       const now = this.context.currentTime;
       gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(0.05, now + 0.05);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 3.0);
+      gain.gain.linearRampToValueAtTime(0.05, now + 0.02); // Softer attack
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6); // Longer, smoother decay
 
       osc.connect(gain);
       gain.connect(this.bgmGain);
+      gain.connect(delayNode); // Send to delay
+
       if (this.warbleGain) this.warbleGain.connect(osc.detune);
 
       osc.start();
-      osc.stop(now + 3.0);
+      osc.stop(now + 1.5);
 
-      // Schedule next note
-      const nextTime = 2000 + Math.random() * 4000; // 2-6 seconds
+      // Schedule next note - Faster, more random
+      const nextTime = 1500 + Math.random() * 2500; // Much sparser
       const timeout = setTimeout(playMelodyNote, nextTime);
       this.melodyTimeouts.push(timeout);
     };
@@ -288,92 +331,52 @@ class SoundManager {
     this.noiseNode.buffer = this.createNoiseBuffer();
     this.noiseNode.loop = true;
     this.noiseGain = this.context.createGain();
-    this.noiseGain.gain.value = 0.002; // Barely audible
+    this.noiseGain.gain.value = 0.001; // Even quieter
     
     const noiseFilter = this.context.createBiquadFilter();
     noiseFilter.type = 'highpass';
-    noiseFilter.frequency.value = 8000; 
+    noiseFilter.frequency.value = 9000; 
     
     this.noiseNode.connect(noiseFilter);
     noiseFilter.connect(this.noiseGain);
     this.noiseGain.connect(this.bgmGain);
     this.noiseNode.start();
-
-    this.isBgmPlaying = true;
-  }
-
-  startBgmDirect() {
-     if (!this.isBgmPlaying) {
-        this.startBgm();
-     }
   }
 
   private stopBgm() {
-    // Clear Melody Loop
+    if (this.bgmGain) {
+      const now = this.context!.currentTime;
+      this.bgmGain.gain.cancelScheduledValues(now);
+      this.bgmGain.gain.exponentialRampToValueAtTime(0.001, now + 1);
+      setTimeout(() => {
+        this.bgmGain?.disconnect();
+        this.bgmGain = null;
+      }, 1000);
+    }
+
+    this.activeOscillators.forEach(({ osc, gain, lfo }) => {
+      try {
+        osc.stop();
+        lfo.stop();
+        osc.disconnect();
+        gain.disconnect();
+      } catch (e) {}
+    });
+    this.activeOscillators = [];
+
     this.melodyTimeouts.forEach(t => clearTimeout(t));
     this.melodyTimeouts = [];
 
-    // Stop Warble
-    if (this.warbleLFO) {
-        try {
-            this.warbleLFO.stop();
-            this.warbleLFO.disconnect();
-        } catch(e) {}
-        this.warbleLFO = null;
-    }
-    if (this.warbleGain) {
-        this.warbleGain.disconnect();
-        this.warbleGain = null;
-    }
-    
-    // Stop Noise
     if (this.noiseNode) {
-        try {
-            this.noiseNode.stop();
-            this.noiseNode.disconnect();
-        } catch(e) {}
-        this.noiseNode = null;
-    }
-    if (this.noiseGain) {
-        this.noiseGain.disconnect();
-        this.noiseGain = null;
+      try {
+        this.noiseNode.stop();
+        this.noiseNode.disconnect();
+      } catch (e) {}
+      this.noiseNode = null;
     }
 
-    this.activeOscillators.forEach(item => {
-      try {
-        // Smooth fade out
-        if (this.context) {
-          item.gain.gain.cancelScheduledValues(this.context.currentTime);
-          item.gain.gain.setValueAtTime(item.gain.gain.value, this.context.currentTime);
-          item.gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 1);
-        }
-        setTimeout(() => {
-          item.osc.stop();
-          item.lfo.stop();
-          item.osc.disconnect();
-          item.lfo.disconnect();
-        }, 1000);
-      } catch (e) {}
-    });
-    
-    this.activeOscillators = [];
-    
-    if (this.bgmGain) {
-      // Fade out master
-      if (this.context) {
-        this.bgmGain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 1);
-      }
-      setTimeout(() => {
-        this.bgmGain?.disconnect();
-        this.masterCompressor?.disconnect();
-        this.reverbNode?.disconnect();
-        this.bgmGain = null;
-        this.masterCompressor = null;
-        this.reverbNode = null;
-      }, 1000);
-    }
-    
     this.isBgmPlaying = false;
+    this.notify();
   }
 }
 

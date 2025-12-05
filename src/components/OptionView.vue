@@ -17,18 +17,19 @@ const clickingKey = ref<string | null>(null);
 
 interface Option {
   label: string
+  desc: string
   key: keyof typeof option_store
 }
 
 // Simplified labels for grid layout
 const list: Option[] = [
-  { label: "指令过滤", key: 'commandHide' },
-  { label: "图像过滤", key: 'imageHide' },
-  { label: "场外过滤", key: 'offTopicHide' },
-  { label: "时间过滤", key: 'timeHide' },
-  { label: "账号隐藏", key: 'userIdHide' },
-  { label: "日期简略", key: 'yearHide' },
-  { label: "缩进对齐", key: 'textIndentAll' },
+  { label: "指令过滤", desc: "隐藏指令内容", key: 'commandHide' },
+  { label: "图像过滤", desc: "折叠图片消息", key: 'imageHide' },
+  { label: "场外过滤", desc: "隐藏场外发言", key: 'offTopicHide' },
+  { label: "时间过滤", desc: "隐藏时间显示", key: 'timeHide' },
+  { label: "账号隐藏", desc: "隐藏用户账号", key: 'userIdHide' },
+  { label: "日期简略", desc: "隐藏年份显示", key: 'yearHide' },
+  { label: "缩进对齐", desc: "文本首行缩进", key: 'textIndentAll' },
 ]
 
 const handleOptionClick = (key: string) => {
@@ -67,9 +68,14 @@ const handleOptionClick = (key: string) => {
 
         <!-- Content -->
         <div class="cell-content">
-          <div class="cell-index">0{{ index + 1 }}</div>
-          <div class="cell-label">{{ opt.label }}</div>
-          <div class="cell-status">{{ option_store[opt.key] ? 'ON' : 'OFF' }}</div>
+          <div class="flex justify-between items-start">
+            <div class="cell-index">0{{ index + 1 }}</div>
+            <div class="cell-status">{{ option_store[opt.key] ? 'ON' : 'OFF' }}</div>
+          </div>
+          <div class="cell-main">
+            <div class="cell-label">{{ opt.label }}</div>
+            <div class="cell-desc">{{ opt.desc }}</div>
+          </div>
         </div>
 
         <!-- Scanline overlay for active state -->
@@ -80,11 +86,13 @@ const handleOptionClick = (key: string) => {
       </div>
       
       <!-- Fillers to complete the grid if needed, or just let it be -->
-      <div class="checker-cell filler">
-        <div class="cell-content opacity-20">
+      <div class="checker-cell filler group">
+        <div class="cell-content">
           <div class="cell-index">--</div>
-          <div class="cell-label">NULL</div>
+          <div class="cell-label text-xl opacity-50 group-hover:opacity-100 transition-opacity">NULL</div>
+          <div class="cell-desc mt-1 opacity-30 group-hover:opacity-80 transition-opacity text-[10px]">RESERVED</div>
         </div>
+        <div class="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(255,255,255,0.05)_10px,rgba(255,255,255,0.05)_20px)] pointer-events-none"></div>
       </div>
     </div>
   </div>
@@ -100,7 +108,7 @@ const handleOptionClick = (key: string) => {
 
 .checker-cell {
   position: relative;
-  aspect-ratio: 2/1; /* Rectangular tiles */
+  aspect-ratio: 1.6; /* Taller tiles to fit descriptions */
   border: 1px solid #333;
   background: #0a0a0a;
   cursor: pointer;
@@ -117,6 +125,10 @@ const handleOptionClick = (key: string) => {
     
     .cell-label {
       letter-spacing: 1px;
+    }
+    .cell-desc {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 
@@ -136,6 +148,10 @@ const handleOptionClick = (key: string) => {
       font-weight: bold;
     }
     
+    .cell-desc {
+      color: #333;
+    }
+
     .corner-mark {
       border-color: #000;
     }
@@ -147,8 +163,9 @@ const handleOptionClick = (key: string) => {
 
   &.filler {
     pointer-events: none;
-    border-style: dashed;
-    opacity: 0.3;
+    border: 1px solid #222;
+    background: #050505;
+    opacity: 1; /* Made more visible as requested */
   }
 }
 
@@ -185,9 +202,16 @@ const handleOptionClick = (key: string) => {
   transition: letter-spacing 0.2s;
 }
 
+.cell-desc {
+  font-size: 10px;
+  opacity: 0.6;
+  margin-top: 2px;
+  transition: all 0.3s ease;
+  font-family: "Fusion Pixel 12px Monospaced", monospace;
+}
+
 .cell-status {
   font-size: 10px;
-  align-self: flex-end;
   font-family: 'Share Tech Mono', monospace;
 }
 

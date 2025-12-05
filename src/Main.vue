@@ -16,40 +16,44 @@
     <!-- Retro Header -->
     <header class="border-b border-white p-4 mb-8 flex justify-between items-end relative z-10">
       <div>
-        <h1 class="text-4xl font-bold uppercase tracking-tighter leading-none glitch-text" data-text="Story Painter">Story Painter</h1>
-        <div class="text-xs mt-1 opacity-70">v2.5.4 // 日志处理器 // LOG_PROCESSOR // READY</div>
+        <h1 class="text-4xl font-bold uppercase tracking-tighter leading-none glitch-text animate-glitch-enter" data-text="Story Painter">Story Painter</h1>
+        <div class="text-xs mt-1 opacity-70 animate-fade-in-up" style="animation-delay: 0.5s">v2.5.4 // 日志处理器 // LOG_PROCESSOR // READY</div>
       </div>
       <div class="flex gap-4 items-center">
-        <retro-button class="w-10 h-10 !p-0 flex items-center justify-center" @click="toggleBgm">
+        <retro-button icon @click="toggleBgm" no-border no-grid>
           <n-icon size="20">
             <VolumeUpFilled v-if="isBgmOn" />
             <VolumeMuteFilled v-else />
           </n-icon>
         </retro-button>
-        <retro-button class="w-10 h-10 !p-0 flex items-center justify-center" @click="openGithub">
-          <logo-github class="w-5 h-5" />
+        <retro-button icon @click="openGithub" no-border no-grid>
+          <n-icon size="20">
+            <logo-github />
+          </n-icon>
         </retro-button>
-        <retro-button class="uppercase" @click="backV1">旧版官网 // LEGACY</retro-button>
+        <retro-button @click="backV1" class="!px-3">
+          旧版官网
+        </retro-button>
       </div>
     </header>
 
     <n-layout-content class="px-4 pb-12 bg-transparent relative z-10">
-      <div class="max-w-[1200px] mx-auto border border-white p-1 relative bg-black/90 backdrop-blur-sm">
+      <div class="max-w-[1200px] mx-auto border border-white p-1 relative bg-black/90 backdrop-blur-sm animate-scanline-sweep">
         <!-- Decorative corners -->
         <div class="absolute -top-1 -left-1 w-2 h-2 bg-white"></div>
         <div class="absolute -top-1 -right-1 w-2 h-2 bg-white"></div>
         <div class="absolute -bottom-1 -left-1 w-2 h-2 bg-white"></div>
         <div class="absolute -bottom-1 -right-1 w-2 h-2 bg-white"></div>
 
-        <div class="border border-white p-6">
+        <div class="border border-white p-6 animate-pulse-glow">
           <div class="flex justify-between items-center mb-6 border-b border-white pb-2">
-            <h2 class="text-xl font-bold uppercase">>> 处理单元 // PROCESSING UNIT</h2>
+            <h2 class="text-xl font-bold uppercase animate-typing inline-block align-middle">>> 处理单元 // PROCESSING UNIT</h2>
             <n-text class="text-xs">SealDice Group: 524364253</n-text>
           </div>
 
           <div class="flex flex-col lg:flex-row gap-6 items-start">
             <!-- Left Sidebar: Options -->
-            <div class="w-full lg:w-1/4 min-w-[280px] flex flex-col gap-6">
+            <div class="w-full lg:w-1/4 min-w-[280px] flex flex-col gap-6 animate-slide-in-left">
               <option-view></option-view>
               
               <!-- Audio Core (Tape + Waveform) -->
@@ -57,7 +61,7 @@
             </div>
 
             <!-- Right Content: Config & Editor -->
-            <div class="w-full lg:flex-1 min-w-0">
+            <div class="w-full lg:flex-1 min-w-0 animate-fade-in-up" style="animation-delay: 0.2s;">
               <n-spin :show="loading">
                 <template #description>
                   LOADING_REMOTE_DATA...
@@ -68,7 +72,7 @@
               <h3 class="text-lg font-bold mb-4 uppercase border-b border-white border-dashed inline-block pr-8">
                 实体配置 // ENTITY CONFIG
               </h3>
-              <div class="pc-list space-y-2">
+              <div class="pc-list space-y-2 animate-stagger">
                 <div v-for="(i, index) in store.pcList" :key="index" class="flex flex-wrap items-center gap-2 p-2 border border-white/20 hover:border-white transition-colors" @mouseenter="playHover">
                    <retro-button class="px-2" @click="deletePc(index, i)"
                     :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG">
@@ -116,10 +120,12 @@
 
             <!-- Editor Area -->
             <div class="relative" v-show="!(isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG)">
-              <div class="absolute right-0 top-0 z-10 flex gap-2 p-2 bg-black border-b border-l border-white">
-                 <retro-button @click="clearText">清空 // CLEAR</retro-button>
-                 <retro-button @click="doFlush">刷新 // FLUSH</retro-button>
-                 <n-checkbox label="染色 // HIGHLIGHT" v-model:checked="store.doEditorHighlight" size="small" @click="playClick" />
+              <div :class="isMobile ? 'flex justify-end gap-2 p-2 bg-black border-b border-white' : 'absolute right-0 top-0 z-10 flex gap-2 p-2 bg-black border-b border-l border-white'">
+                 <retro-button @click="clearText" :class="{ '!min-w-0 !px-3': isMobile }">{{ isMobile ? '清空' : '清空 // CLEAR' }}</retro-button>
+                 <retro-button @click="doFlush" :class="{ '!min-w-0 !px-3': isMobile }">{{ isMobile ? '刷新' : '刷新 // FLUSH' }}</retro-button>
+                 <div class="flex items-center">
+                   <n-checkbox :label="isMobile ? '染色' : '染色 // HIGHLIGHT'" v-model:checked="store.doEditorHighlight" size="small" @click="playClick" />
+                 </div>
               </div>
               <code-mirror ref="editor" class="border border-white min-h-[500px]" @change="onChange"></code-mirror>
             </div>
@@ -209,7 +215,7 @@ const toggleBgm = () => {
   isBgmOn.value = audioManager.toggleBgm()
 }
 
-const isMobile = ref(false)
+const isMobile = breakpoints.smaller('lg')
 const downloadUsableRank = ref(0)
 
 const isShowPreview = ref(false)
@@ -332,6 +338,11 @@ const browserAlert = () => {
 }
 
 onMounted(async () => {
+  isBgmOn.value = audioManager.isPlaying;
+  audioManager.subscribe((playing) => {
+    isBgmOn.value = playing;
+  });
+  
   const params = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop as any)
   })

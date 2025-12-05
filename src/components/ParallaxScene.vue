@@ -128,8 +128,8 @@ const draw = () => {
       ctx.translate(offsetX, offsetY);
       
       // Draw Buildings
-      ctx.fillStyle = '#0a0a0a'; // Dark buildings
-      ctx.strokeStyle = '#222'; // Faint edges
+      ctx.fillStyle = '#1a1a1a'; // Lighter buildings for better visibility
+      ctx.strokeStyle = '#444'; // Clearer edges
       ctx.lineWidth = 1;
       
       buildings.forEach(b => {
@@ -222,17 +222,34 @@ watch([width, height], () => {
     
     <!-- Moon (Parallax Layer 1 - Furthest) -->
     <!-- Moves OPPOSITE to mouse, very slowly -->
-    <div class="absolute transition-transform duration-75 ease-out will-change-transform"
+    <div class="absolute transition-transform duration-75 ease-out will-change-transform z-10"
          :style="{ 
             top: '10%', 
             left: '50%', 
             transform: `translate(calc(-50% + ${mouseXNorm * 50}px), ${mouseYNorm * 20}px)` 
          }">
-      <slot name="moon"></slot>
+      <div class="relative">
+        <!-- Main Moon (Slot) -->
+        <div class="moon-wrapper relative">
+          <slot name="moon"></slot>
+          <!-- Moon Halo -->
+          <div class="absolute inset-0 rounded-full animate-halo-pulse-1 pointer-events-none mix-blend-screen"></div>
+        </div>
+
+        <!-- Secondary Planet (Orbiting/Positioned away) -->
+        <div class="absolute -right-32 -bottom-12 w-12 h-12 rounded-full bg-[#111] border border-gray-600 overflow-hidden shadow-[inset_-4px_-4px_10px_rgba(0,0,0,0.8)] animate-float-slow">
+          <!-- Craters -->
+          <div class="absolute top-2 left-3 w-2 h-2 bg-black/40 rounded-full"></div>
+          <div class="absolute bottom-3 right-4 w-3 h-3 bg-black/30 rounded-full"></div>
+          
+          <!-- Planet Halo -->
+          <div class="absolute inset-0 rounded-full animate-halo-pulse-2 pointer-events-none mix-blend-screen"></div>
+        </div>
+      </div>
     </div>
 
     <!-- City (Parallax Layer 2 - Mid) -->
-    <canvas ref="canvasRef" class="absolute inset-0 opacity-60"></canvas>
+    <canvas ref="canvasRef" class="absolute inset-0 opacity-100"></canvas>
 
     <!-- Ruins (Parallax Layer 3 - Foreground) -->
     <canvas ref="ruinsCanvasRef" class="absolute inset-0"></canvas>
@@ -246,5 +263,32 @@ watch([width, height], () => {
 .parallax-scene {
     /* Ensure it stays behind content */
     z-index: 0;
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+@keyframes halo-pulse-1 {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); }
+  50% { box-shadow: 0 0 60px rgba(255, 255, 255, 0.3), 20px 0 80px rgba(255, 255, 255, 0.1); }
+}
+
+@keyframes halo-pulse-2 {
+  0%, 100% { box-shadow: 0 0 15px rgba(200, 220, 255, 0.1); }
+  50% { box-shadow: 0 0 50px rgba(200, 220, 255, 0.3), -20px 0 60px rgba(200, 220, 255, 0.1); }
+}
+
+.animate-halo-pulse-1 {
+  animation: halo-pulse-1 8s ease-in-out infinite;
+}
+
+.animate-halo-pulse-2 {
+  animation: halo-pulse-2 8s ease-in-out infinite 1s; /* Offset slightly */
 }
 </style>
