@@ -2,11 +2,140 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg-color: #0a0a0a;
+  --text-color: #e0e0e0;
+  --border-color: #333;
+  --accent-color: #fff;
+  --grid-color: rgba(255, 255, 255, 0.05);
+}
+
 body {
-  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
-    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: "Share Tech Mono", "Fusion Pixel 12px Monospaced", "Courier New", Courier, "PingFang SC", monospace;
+  -webkit-font-smoothing: none; /* Pixelated feel */
   margin: 0;
-  font-size: 16px;
+  overflow-x: hidden;
+  cursor: none !important;
+}
+
+*, *::before, *::after {
+  cursor: none !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: #000;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border: 1px solid #000;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Retro Grid Background */
+.retro-grid {
+  background-size: 40px 40px;
+  background-image:
+    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+  background-attachment: fixed;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Scanlines */
+.retro-grid::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* Illusory Moon */
+.illusory-moon {
+  position: fixed;
+  top: 10%;
+  right: 10%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.3;
+  z-index: 0;
+  pointer-events: none;
+  animation: moon-pulse 10s infinite alternate;
+}
+
+@keyframes moon-pulse {
+  0% { transform: scale(1); opacity: 0.3; }
+  100% { transform: scale(1.1); opacity: 0.4; }
+}
+
+/* Cassette UI Elements */
+.cassette-border {
+  border: 2px solid var(--border-color);
+  background: #000;
+  position: relative;
+}
+
+.cassette-border::before {
+  content: "";
+  position: absolute;
+  top: -2px; left: -2px; right: -2px; bottom: -2px;
+  border: 1px solid #555;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.glitch-text {
+  position: relative;
+}
+
+.glitch-text:hover {
+  animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+  color: var(--accent-color);
+}
+
+@keyframes glitch {
+  0% { transform: translate(0) }
+  20% { transform: translate(-2px, 2px) }
+  40% { transform: translate(-2px, -2px) }
+  60% { transform: translate(2px, 2px) }
+  80% { transform: translate(2px, -2px) }
+  100% { transform: translate(0) }
+}
+
+/* Overrides for Naive UI to fit the theme */
+.n-card {
+  background-color: #000 !important;
+  border: 1px solid #333 !important;
+  border-radius: 0 !important;
+}
+.n-button {
+  border-radius: 0 !important;
+  font-family: monospace !important;
+}
+.n-input, .n-input__input {
+  background-color: #000 !important;
+  border-radius: 0 !important;
+  color: #fff !important;
+  font-family: monospace !important;
 }

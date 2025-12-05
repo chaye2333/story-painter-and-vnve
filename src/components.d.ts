@@ -8,6 +8,11 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     CodeMirror: typeof import('./components/CodeMirror.vue')['default']
+    CustomCursor: typeof import('./components/CustomCursor.vue')['default']
+    InteractiveGrid: typeof import('./components/InteractiveGrid.vue')['default']
+    IntroAnimation: typeof import('./components/IntroAnimation.vue')['default']
+    LoadingScreen: typeof import('./components/LoadingScreen.vue')['default']
+    MoonWindow: typeof import('./components/MoonWindow.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NCheckbox: typeof import('naive-ui')['NCheckbox']
     NColorPicker: typeof import('naive-ui')['NColorPicker']

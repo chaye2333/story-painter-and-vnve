@@ -1,5 +1,5 @@
 <template>
-  <div id="e" ref="editor" class="codemirror relative border dark:border-0">
+  <div id="e" ref="editor" class="codemirror relative border border-white bg-black">
     <slot></slot>
   </div>
 </template>
@@ -18,15 +18,13 @@ import {
 import { EditorState, StateEffect } from '@codemirror/state';
 import { standardKeymap, insertTab, history, historyKeymap } from '@codemirror/commands';
 import { syntaxTree } from "@codemirror/language"
-import { materialDark, materialLight } from '@uiw/codemirror-theme-material';
+import { materialDark } from '@uiw/codemirror-theme-material';
 import { generateLang } from '~/utils/highlight';
 import { useStore } from '~/store'
-import { useDark } from "@vueuse/core";
 import { basicSetup } from "codemirror";
 
 const editor = ref<HTMLDivElement>()
 const store = useStore()
-const isDark = useDark({ disableTransition: false })
 
 const emit = defineEmits<(e: 'change', v: ViewUpdate) => void>();
 
@@ -60,7 +58,27 @@ function getExts(highlight = false) {
         // temp1.view.state.doc.toString()
       }
     }),
-    isDark.value ? materialDark : materialLight,
+    materialDark,
+    EditorView.theme({
+      "&": {
+        backgroundColor: "#000000",
+        color: "#ffffff"
+      },
+      ".cm-content": {
+        fontFamily: '"Share Tech Mono", "Fusion Pixel 12px Monospaced", "Courier New", Courier, monospace',
+      },
+      ".cm-gutters": {
+        backgroundColor: "#000000",
+        color: "#666666",
+        borderRight: "1px solid #333333"
+      },
+      ".cm-activeLineGutter": {
+        backgroundColor: "#111111"
+      },
+      ".cm-activeLine": {
+        backgroundColor: "#111111"
+      }
+    })
   ]
 }
 
