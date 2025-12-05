@@ -1,12 +1,17 @@
 <template>
-  <n-layout class="min-h-screen retro-grid relative overflow-hidden">
-    <!-- Decorative Elements -->
-    <div class="black-moon">
-      <div class="moon-crater c1"></div>
-      <div class="moon-crater c2"></div>
-      <div class="moon-crater c3"></div>
-    </div>
-    <interactive-grid />
+  <n-layout class="min-h-screen relative overflow-hidden bg-black">
+    <!-- Parallax Background Scene -->
+    <parallax-scene>
+      <template #moon>
+        <div class="black-moon">
+          <div class="moon-crater c1"></div>
+          <div class="moon-crater c2"></div>
+          <div class="moon-crater c3"></div>
+        </div>
+      </template>
+    </parallax-scene>
+    
+    <interactive-grid class="opacity-30" />
     
     <!-- Retro Header -->
     <header class="border-b border-white p-4 mb-8 flex justify-between items-end relative z-10">
@@ -15,23 +20,21 @@
         <div class="text-xs mt-1 opacity-70">v2.5.4 // 日志处理器 // LOG_PROCESSOR // READY</div>
       </div>
       <div class="flex gap-4 items-center">
-        <n-button text class="hover:text-white transition-colors" @click="toggleBgm" @mouseenter="playHover">
-          <template #icon>
-            <n-icon size="20">
-              <VolumeUpFilled v-if="isBgmOn" />
-              <VolumeMuteFilled v-else />
-            </n-icon>
-          </template>
-        </n-button>
-        <a href="https://github.com/sealdice/story-painter" target="_blank" class="hover:text-gray-400 transition-colors" @mouseenter="playHover" @click="playClick">
-          <logo-github class="w-6 h-6" />
-        </a>
-        <n-button size="small" type="primary" class="uppercase" @click="backV1" @mouseenter="playHover">旧版官网 // LEGACY</n-button>
+        <retro-button class="w-10 h-10 !p-0 flex items-center justify-center" @click="toggleBgm">
+          <n-icon size="20">
+            <VolumeUpFilled v-if="isBgmOn" />
+            <VolumeMuteFilled v-else />
+          </n-icon>
+        </retro-button>
+        <retro-button class="w-10 h-10 !p-0 flex items-center justify-center" @click="openGithub">
+          <logo-github class="w-5 h-5" />
+        </retro-button>
+        <retro-button class="uppercase" @click="backV1">旧版官网 // LEGACY</retro-button>
       </div>
     </header>
 
     <n-layout-content class="px-4 pb-12 bg-transparent relative z-10">
-      <div class="max-w-[1200px] mx-auto border border-white p-1 relative bg-black/80 backdrop-blur-sm">
+      <div class="max-w-[1200px] mx-auto border border-white p-1 relative bg-black/90 backdrop-blur-sm">
         <!-- Decorative corners -->
         <div class="absolute -top-1 -left-1 w-2 h-2 bg-white"></div>
         <div class="absolute -top-1 -right-1 w-2 h-2 bg-white"></div>
@@ -49,34 +52,8 @@
             <div class="w-full lg:w-1/4 min-w-[280px] flex flex-col gap-6">
               <option-view></option-view>
               
-              <!-- BGM Tape Control -->
-              <div class="tape-container cursor-pointer transform transition-transform hover:scale-105 active:scale-95" 
-                   @click="() => { toggleBgm(); playClick() }"
-                   @mouseenter="playHover"
-                   title="Toggle BGM">
-                <div class="tape-body" :class="{ 'playing': isBgmOn }">
-                  <div class="tape-label">
-                    <div class="flex justify-between w-full px-2 mb-1">
-                       <span class="text-[10px] opacity-70">A-SIDE</span>
-                       <span class="text-[10px] opacity-70">{{ isBgmOn ? 'PLAYING' : 'PAUSED' }}</span>
-                    </div>
-                    <span class="tape-title">COSMIC_ECHOES</span>
-                    <div class="tape-circles">
-                      <div class="tape-circle left" :class="{ 'animate-spin-slow': isBgmOn }"></div>
-                      <div class="tape-window">
-                         <div class="tape-reel left" :class="{ 'animate-spin-slow': isBgmOn }"></div>
-                         <div class="tape-reel right" :class="{ 'animate-spin-slow': isBgmOn }"></div>
-                      </div>
-                      <div class="tape-circle right" :class="{ 'animate-spin-slow': isBgmOn }"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Waveform Visualization -->
-              <div class="waveform-container h-16 w-full flex items-center justify-center">
-                <canvas ref="waveformCanvas" class="waveform-canvas w-full h-full opacity-70"></canvas>
-              </div>
+              <!-- Audio Core (Tape + Waveform) -->
+              <audio-core :is-bgm-on="isBgmOn" @toggle="toggleBgm" />
             </div>
 
             <!-- Right Content: Config & Editor -->
@@ -93,13 +70,10 @@
               </h3>
               <div class="pc-list space-y-2">
                 <div v-for="(i, index) in store.pcList" :key="index" class="flex flex-wrap items-center gap-2 p-2 border border-white/20 hover:border-white transition-colors" @mouseenter="playHover">
-                   <n-button type="error" size="small" class="px-2" @click="() => { deletePc(index, i); playClick() }"
-                    :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG"
-                    @mouseenter="playHover">
-                    <template #icon>
+                   <retro-button class="px-2" @click="deletePc(index, i)"
+                    :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG">
                       <n-icon><icon-delete /></n-icon>
-                    </template>
-                  </n-button>
+                  </retro-button>
 
                   <n-input :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG"
                     v-model:value="i.name" class="w-40" placeholder="名字 // NAME" @focus="() => { nameFocus(i); playClick() }"
@@ -121,10 +95,10 @@
             <div class="mb-8 border-t border-b border-white py-4">
               <div class="flex flex-wrap justify-between items-center gap-4">
                 <div class="flex gap-2 flex-wrap">
-                   <n-button size="small" @click="() => { exportRecordRaw(); playClick() }" @mouseenter="playHover">原始文件 // RAW</n-button>
-                   <n-button size="small" @click="() => { exportRecordDOC(); playClick() }" @mouseenter="playHover">带图WORD // DOC_IMG</n-button>
-                   <n-button size="small" @click="() => { exportRecordTalkDOC(); playClick() }" @mouseenter="playHover">对话WORD // DOC_TALK</n-button>
-                   <n-button size="small" @click="() => { exportRecordDocx(); playClick() }" @mouseenter="playHover">标准DOCX // DOCX</n-button>
+                   <retro-button @click="exportRecordRaw">原始文件 // RAW</retro-button>
+                   <retro-button @click="exportRecordDOC">带图WORD // DOC_IMG</retro-button>
+                   <retro-button @click="exportRecordTalkDOC">对话WORD // DOC_TALK</retro-button>
+                   <retro-button @click="exportRecordDocx">标准DOCX // DOCX</retro-button>
                 </div>
                 
                 <div class="flex gap-4 items-center flex-wrap">
@@ -135,7 +109,7 @@
                     <n-checkbox label="回声工坊 // TRG" v-model:checked="isShowPreviewTRG" @click="() => { previewClick('trg'); playClick() }" />
                   </div>
                   <n-divider vertical />
-                  <n-button text @click="() => { refreshColors(); playClick() }" @mouseenter="playHover">刷新色板 // REFRESH</n-button>
+                  <retro-button @click="refreshColors">刷新色板 // REFRESH</retro-button>
                 </div>
               </div>
             </div>
@@ -143,8 +117,8 @@
             <!-- Editor Area -->
             <div class="relative" v-show="!(isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG)">
               <div class="absolute right-0 top-0 z-10 flex gap-2 p-2 bg-black border-b border-l border-white">
-                 <n-button size="tiny" @click="() => { clearText(); playClick() }" @mouseenter="playHover">清空 // CLEAR</n-button>
-                 <n-button size="tiny" @click="() => { doFlush(); playClick() }" @mouseenter="playHover">刷新 // FLUSH</n-button>
+                 <retro-button @click="clearText">清空 // CLEAR</retro-button>
+                 <retro-button @click="doFlush">刷新 // FLUSH</retro-button>
                  <n-checkbox label="染色 // HIGHLIGHT" v-model:checked="store.doEditorHighlight" size="small" @click="playClick" />
               </div>
               <code-mirror ref="editor" class="border border-white min-h-[500px]" @change="onChange"></code-mirror>
@@ -171,6 +145,8 @@
 import { nextTick, ref, onMounted, onUnmounted, watch, h, render, renderList, computed } from "vue";
 import { useStore } from './store'
 import CodeMirror from './components/CodeMirror.vue'
+import RetroButton from './components/RetroButton.vue'
+import AudioCore from './components/AudioCore.vue'
 import { debounce, delay } from 'lodash-es'
 import { exportFileRaw, exportFileQQ, exportFileIRC, exportFileDoc, exportFileDocx } from "./utils/exporter";
 import type { DocxExportEntry } from "./utils/exporter";
@@ -200,83 +176,11 @@ import { asyncBufferFrom } from 'hyperparam'
 import { compressors } from 'hyparquet-compressors'
 import { audioManager } from "./utils/audio";
 import InteractiveGrid from "./components/InteractiveGrid.vue";
+import ParallaxScene from "./components/ParallaxScene.vue";
 
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const notMobile = breakpoints.greater('sm')
-
-const waveformCanvas = ref<HTMLCanvasElement | null>(null);
-const sampleCount = 64;
-let animationFrameId: number | null = null;
-
-const updateWaveform = () => {
-  if (!audioManager.analyser) return;
-  const canvas = waveformCanvas.value;
-  if (!canvas) {
-    animationFrameId = requestAnimationFrame(updateWaveform);
-    return;
-  }
-  
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
-
-  const dpr = window.devicePixelRatio || 1;
-  const rect = canvas.getBoundingClientRect();
-  
-  // Resize if needed
-  if (canvas.width !== rect.width * dpr || canvas.height !== rect.height * dpr) {
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-  }
-  
-  // Clear
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-  const bufferLength = audioManager.analyser.frequencyBinCount;
-  const dataArray = new Uint8Array(bufferLength);
-  audioManager.analyser.getByteFrequencyData(dataArray);
-  
-  const width = canvas.width;
-  const height = canvas.height;
-  
-  ctx.beginPath();
-  
-  const step = Math.floor(bufferLength / sampleCount);
-  const sliceWidth = width / (sampleCount - 1);
-  
-  // Start from bottom left
-  ctx.moveTo(0, height);
-  
-  for(let i = 0; i < sampleCount; i++) {
-    const value = dataArray[i * step];
-    const percent = value / 255;
-    const y = height - (percent * height * 0.8); 
-    const x = i * sliceWidth;
-    
-    ctx.lineTo(x, y);
-  }
-  
-  ctx.lineTo(width, height);
-  
-  ctx.strokeStyle = '#fff';
-  ctx.lineWidth = 2 * dpr; // Scale line width
-  ctx.stroke();
-  
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-  ctx.fill();
-
-  animationFrameId = requestAnimationFrame(updateWaveform);
-};
-
-onMounted(() => {
-  updateWaveform();
-});
-
-onUnmounted(() => {
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId);
-  }
-});
 
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
@@ -328,6 +232,10 @@ const colorChanged = debounce((v: string, i: CharItem) => {
 const backV1 = () => {
   // location.href = location.origin + '/v1/' + location.search + location.hash;
   location.href = 'https://dice.weizaima.com';
+}
+
+const openGithub = () => {
+  window.open('https://github.com/sealdice/story-painter', '_blank');
 }
 
 // 清空文本
@@ -1139,13 +1047,22 @@ const code = ref("")
   background: #050505;
   border-radius: 50%;
   box-shadow: 
-    0 0 50px rgba(255, 255, 255, 0.1),
-    inset -20px -20px 60px rgba(255, 255, 255, 0.08),
-    0 0 2px rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+    0 0 120px rgba(255, 255, 255, 0.4),
+    inset -20px -20px 60px rgba(255, 255, 255, 0.2),
+    0 0 10px rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   z-index: 0;
-  animation: floatMoon 20s ease-in-out infinite;
+  animation: floatAndRotate 60s linear infinite;
   pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+  .black-moon {
+    width: 700px;
+    height: 700px;
+    top: -250px;
+    right: -250px;
+  }
 }
 
 .moon-crater {
@@ -1155,9 +1072,17 @@ const code = ref("")
   box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.8);
 }
 
-.c1 { top: 65%; left: 15%; width: 15px; height: 15px; }
-.c2 { top: 80%; left: 35%; width: 30px; height: 30px; }
-.c3 { top: 55%; left: 40%; width: 10px; height: 10px; }
+.c1 { top: 65%; left: 15%; width: 5%; height: 5%; }
+.c2 { top: 80%; left: 35%; width: 10%; height: 10%; }
+.c3 { top: 55%; left: 40%; width: 3%; height: 3%; }
+
+@keyframes floatAndRotate {
+  0% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-30px) rotate(90deg); }
+  50% { transform: translateY(0) rotate(180deg); }
+  75% { transform: translateY(-30px) rotate(270deg); }
+  100% { transform: translateY(0) rotate(360deg); }
+}
 
 /* Tape Control Styles */
 .tape-container {
@@ -1259,7 +1184,7 @@ const code = ref("")
   height: 28px;
   background: #222;
   border-radius: 2px;
-  border: 1px solid #000;
+  border: 1px solid #222;
   display: flex;
   align-items: center;
   justify-content: center;

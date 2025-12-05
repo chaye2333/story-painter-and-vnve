@@ -7,6 +7,8 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AudioControl: typeof import('./components/AudioControl.vue')['default']
+    AudioCore: typeof import('./components/AudioCore.vue')['default']
     CodeMirror: typeof import('./components/CodeMirror.vue')['default']
     CustomCursor: typeof import('./components/CustomCursor.vue')['default']
     InteractiveGrid: typeof import('./components/InteractiveGrid.vue')['default']
@@ -29,9 +31,11 @@ declare module 'vue' {
     NNotificationProvider: typeof import('naive-ui')['NNotificationProvider']
     NSelect: typeof import('naive-ui')['NSelect']
     NSpin: typeof import('naive-ui')['NSpin']
+    NSwitch: typeof import('naive-ui')['NSwitch']
     NTag: typeof import('naive-ui')['NTag']
     NTooltip: typeof import('naive-ui')['NTooltip']
     OptionView: typeof import('./components/OptionView.vue')['default']
+    ParallaxScene: typeof import('./components/ParallaxScene.vue')['default']
     PreviewBbs: typeof import('./components/previews/preview-bbs.vue')['default']
     PreviewBbsItem: typeof import('./components/previews/preview-bbs-item.vue')['default']
     PreviewBbsPineapple: typeof import('./components/previews/preview-bbs-pineapple.vue')['default']
@@ -41,5 +45,6 @@ declare module 'vue' {
     PreviewTableTr: typeof import('./components/previews/preview-table-tr.vue')['default']
     PreviewTrg: typeof import('./components/previews/preview-trg.vue')['default']
     PreviewTrgItem: typeof import('./components/previews/preview-trg-item.vue')['default']
+    RetroButton: typeof import('./components/RetroButton.vue')['default']
   }
 }

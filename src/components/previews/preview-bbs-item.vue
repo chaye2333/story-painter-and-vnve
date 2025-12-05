@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="list-item-dynamic">
     <span style="color: #aaa" class="_time" v-if="!store.exportOptions.timeHide">[color={{ getTimeColor() }}]{{ timeSolve(source)
     }}[/color]</span>
     <span :style="{ 'color': colorByName(source) }">[color={{ colorByName(source) }}]

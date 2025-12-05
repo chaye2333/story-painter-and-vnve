@@ -1,5 +1,5 @@
 <template>
-  <div class="pineapple-item">
+  <div class="list-item-dynamic">
     <pre class="pineapple-text">{{ source.text }}</pre>
   </div>
 </template>

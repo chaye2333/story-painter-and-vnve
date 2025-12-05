@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="list-item-dynamic">
     <div :style="source.isDice ? 'margin-top: 16px; margin-bottom: 16px' : ''">
       <span :style="{ 'color': colorByName(source) }" v-if="source.isDice"># </span>
       <span :style="{ 'color': colorByName(source) }" class="_nickname">{{ nicknameSolve(source) }}</span>

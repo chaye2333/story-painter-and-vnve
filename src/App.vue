@@ -15,7 +15,7 @@ const themeOverrides: GlobalThemeOverrides = {
     cardColor: '#000000',
     modalColor: '#000000',
     popoverColor: '#000000',
-    fontFamily: '"Share Tech Mono", "Courier New", Courier, monospace',
+    fontFamily: '"Share Tech Mono", "Fusion Pixel 12px Monospaced", "Courier New", Courier, monospace',
   },
   Button: {
     textColor: '#ffffff',

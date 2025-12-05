@@ -73,10 +73,10 @@ function getExts(highlight = false) {
         borderRight: "1px solid #333333"
       },
       ".cm-activeLineGutter": {
-        backgroundColor: "#111111"
+        backgroundColor: "#222222"
       },
       ".cm-activeLine": {
-        backgroundColor: "#111111"
+        backgroundColor: "#222222"
       }
     })
   ]
