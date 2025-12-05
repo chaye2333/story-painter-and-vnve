@@ -31,8 +31,8 @@
             <logo-github />
           </n-icon>
         </retro-button>
-        <retro-button @click="backV1" class="!px-3">
-          旧版官网
+        <retro-button @click="backV1" class="!px-2 !text-xs">
+          官网
         </retro-button>
       </div>
     </header>
