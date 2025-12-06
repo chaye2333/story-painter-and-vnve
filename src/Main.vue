@@ -37,7 +37,8 @@
           <!-- Main Title -->
           <h1 class="relative text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none select-none cursor-pointer glitch-hover mix-blend-screen animate-glitch-enter" data-text="Story Painter" @click="reloadPage">
             <!-- Core text -->
-            <span class="relative z-10 text-transparent bg-clip-text bg-gradient-to-b from-white via-gray-100 to-gray-400 drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]">Story Painter</span>
+            <span class="relative z-10 text-transparent bg-clip-text bg-gradient-to-b from-white via-gray-100 to-gray-400 drop-shadow-[0_0_15px_rgba(255,255,255,0.6)] block md:inline">Story</span>
+            <span class="relative z-10 text-transparent bg-clip-text bg-gradient-to-b from-white via-gray-100 to-gray-400 drop-shadow-[0_0_15px_rgba(255,255,255,0.6)] block md:inline">Painter</span>
             
             <!-- Decorative elements around title -->
             <div class="absolute -left-6 top-0 h-full w-1 bg-white/10 hidden md:block"></div>
