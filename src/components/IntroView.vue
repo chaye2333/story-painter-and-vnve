@@ -46,7 +46,7 @@
     <!-- Scrollable Wrapper to ensure background stretches with content -->
     <div class="relative min-h-full w-full">
       <!-- Background Image Layer (Absolute to Wrapper) -->
-      <div ref="bgRef" class="absolute inset-0 z-0 overflow-hidden group">
+      <div ref="bgRef" class="absolute inset-0 z-0 overflow-hidden group h-[50vh] md:h-full">
         <img :src="xufuImg" alt="Xu Fu" class="w-full h-full object-cover object-top opacity-90 glitch-img" />
         
         <!-- Enhanced Scanline overlay -->
@@ -63,15 +63,22 @@
       </div>
 
       <!-- Right Content Layer (Relative in Wrapper) -->
-      <div class="relative z-10 w-full md:w-[65%] lg:w-[55%] ml-auto bg-gradient-to-l from-black via-black/95 to-transparent min-h-screen flex flex-col pl-20 pr-8 md:pr-16 py-12">
+      <div class="relative z-10 w-full md:w-[65%] lg:w-[55%] ml-auto md:bg-gradient-to-l md:from-black md:via-black/95 md:to-transparent min-h-screen flex flex-col md:pl-20 md:pr-16 md:py-12">
         
-        <!-- Content Area -->
-        <div class="relative" :class="{'animate-content-entry': !isLoading}">
+        <!-- Mobile Spacer to show image -->
+        <div class="h-[45vh] md:hidden shrink-0"></div>
+
+        <!-- Content Area with Mobile Background -->
+        <div class="relative md:bg-transparent bg-black flex-1 pl-4 pr-4 pb-12 md:p-0" :class="{'animate-content-entry': !isLoading}">
+          
+          <!-- Mobile Top Gradient Fade -->
+          <div class="absolute -top-24 left-0 w-full h-24 bg-gradient-to-t from-black to-transparent pointer-events-none md:hidden"></div>
+
           <!-- Header -->
           <div class="mb-8 border-b border-white/20 pb-4 relative content-item">
             <div class="absolute -left-4 top-0 bottom-0 w-1 bg-white/20"></div>
             <h2 class="text-3xl md:text-4xl font-black text-white tracking-tighter mb-2">
-              XU_FU <span class="text-sm font-normal text-gray-400 tracking-widest align-middle ml-2">// 豹系公骰</span>
+              徐福<span class="text-sm font-normal text-gray-400 tracking-widest align-middle ml-2">// 豹系公骰</span>
             </h2>
             <div class="text-xs text-gray-500 font-mono tracking-[0.2em] uppercase">
               Class: Investigator / Date: 2025-12

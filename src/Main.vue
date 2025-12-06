@@ -198,7 +198,7 @@
         <div class="flex flex-col md:flex-row justify-between items-center gap-4">
           <div class="flex flex-col gap-2 items-center md:items-start">
              <div>QQ反馈群: 241639081</div>
-             <div class="opacity-70">被拖入抽象宇宙被世人忘却的月亮，现在你重新看到了它</div>
+             <div class="opacity-70">“那颗被放逐至抽象宇宙、遗落在记忆边缘的月亮，此刻，终在你的凝视中重获新生。”</div>
           </div>
           
           <div class="flex flex-col gap-2 items-center md:items-end">
