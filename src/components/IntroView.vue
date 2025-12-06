@@ -47,7 +47,7 @@
     <div class="relative min-h-full w-full">
       <!-- Background Image Layer (Absolute to Wrapper) -->
       <div ref="bgRef" class="absolute inset-0 z-0 overflow-hidden group">
-        <img src="../assets/xufu.PNG" alt="Xu Fu" class="w-full h-full object-cover object-top opacity-90 glitch-img" />
+        <img :src="xufuImg" alt="Xu Fu" class="w-full h-full object-cover object-top opacity-90 glitch-img" />
         
         <!-- Enhanced Scanline overlay -->
         <div class="absolute inset-0 pointer-events-none bg-scanlines opacity-20"></div>
@@ -161,6 +161,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useMouse, useWindowSize, useDevicePixelRatio } from '@vueuse/core';
+import xufuImg from '../assets/xufu.png';
 
 const bgRef = ref<HTMLElement | null>(null);
 const canvasRef = ref<HTMLCanvasElement | null>(null);
