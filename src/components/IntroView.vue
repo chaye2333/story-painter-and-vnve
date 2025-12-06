@@ -161,7 +161,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useMouse, useWindowSize, useDevicePixelRatio } from '@vueuse/core';
-import xufuImg from '../assets/xufu.png';
+import xufuImg from '../assets/xufu_avatar.png';
 
 const bgRef = ref<HTMLElement | null>(null);
 const canvasRef = ref<HTMLCanvasElement | null>(null);
