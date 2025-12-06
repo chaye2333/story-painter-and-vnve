@@ -34,6 +34,7 @@ const themeOverrides: GlobalThemeOverrides = {
 
 <template>
   <n-config-provider :theme="darkTheme" :theme-overrides="themeOverrides">
+    <div class="screen-scanlines"></div>
     <CustomCursor />
     <LoadingScreen />
     <n-message-provider>

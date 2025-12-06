@@ -49,23 +49,29 @@ body {
   position: relative;
 }
 
-/* Scanlines */
-.retro-grid::after {
-  content: "";
+/* Scanlines - Global Effect */
+.screen-scanlines {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
   background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.15),
-    rgba(0, 0, 0, 0.15) 1px,
-    transparent 1px,
-    transparent 2px
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(255, 255, 255, 0.05) 3px
   );
+  box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
   pointer-events: none;
-  z-index: 999;
+  z-index: 9999;
+}
+
+.bg-grid-pattern {
+  background-size: 40px 40px;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
 }
 
 /* Illusory Moon */
@@ -155,6 +161,67 @@ body {
   }
 }
 
+/* Enhanced Glitch Effect */
+.glitch-hover {
+  position: relative;
+  color: white;
+}
+
+.glitch-hover:hover {
+  animation: glitch-shake 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+}
+
+.glitch-hover:hover::before,
+.glitch-hover:hover::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+
+.glitch-hover:hover::before {
+  color: #0ff;
+  z-index: -1;
+  animation: glitch-anim-1 0.4s infinite linear alternate-reverse;
+}
+
+.glitch-hover:hover::after {
+  color: #f0f;
+  z-index: -2;
+  animation: glitch-anim-2 0.4s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-shake {
+  0% { transform: translate(0) }
+  20% { transform: translate(-2px, 2px) skewX(2deg) }
+  40% { transform: translate(-2px, -2px) skewX(-2deg) }
+  60% { transform: translate(2px, 2px) skewX(2deg) }
+  80% { transform: translate(2px, -2px) skewX(-2deg) }
+  100% { transform: translate(0) }
+}
+
+@keyframes glitch-anim-1 {
+  0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 0); }
+  20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, 0); }
+  40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 0); }
+  60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, 0); }
+  80% { clip-path: inset(10% 0 60% 0); transform: translate(-2px, 0); }
+  100% { clip-path: inset(30% 0 40% 0); transform: translate(2px, 0); }
+}
+
+@keyframes glitch-anim-2 {
+  0% { clip-path: inset(10% 0 60% 0); transform: translate(2px, 0); }
+  20% { clip-path: inset(30% 0 20% 0); transform: translate(-2px, 0); }
+  40% { clip-path: inset(70% 0 10% 0); transform: translate(2px, 0); }
+  60% { clip-path: inset(20% 0 50% 0); transform: translate(-2px, 0); }
+  80% { clip-path: inset(50% 0 30% 0); transform: translate(2px, 0); }
+  100% { clip-path: inset(0% 0 80% 0); transform: translate(-2px, 0); }
+}
+
+/* Keep original glitch-text for compatibility or less intense use */
 .glitch-text {
   position: relative;
 }
@@ -298,10 +365,10 @@ body {
 @keyframes glitchEnter {
   0% { opacity: 0; transform: scale(1.1); clip-path: polygon(0 0, 100% 0, 100% 10%, 0 10%); }
   20% { clip-path: polygon(0 10%, 100% 10%, 100% 30%, 0 30%); transform: translateX(-5px) scale(1.05); }
-  40% { clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%); transform: translateX(5px) scale(1.02); }
-  60% { clip-path: polygon(0 50%, 100% 50%, 100% 80%, 0 80%); transform: translateX(-2px) scale(1); opacity: 1; }
-  80% { clip-path: polygon(0 80%, 100% 80%, 100% 100%, 0 100%); }
-  100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); transform: scale(1); opacity: 1; }
+  40% { clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%); transform: translateX(5px) scale(0.95); }
+  60% { clip-path: polygon(0 50%, 100% 50%, 100% 80%, 0 80%); transform: translateX(-2px) scale(1.02); }
+  80% { clip-path: polygon(0 80%, 100% 80%, 100% 100%, 0 100%); transform: translateX(2px) scale(0.98); }
+  100% { opacity: 1; transform: scale(1); clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
 }
 
 /* 8. Scanline Sweep - For Containers */
@@ -309,39 +376,49 @@ body {
   position: relative;
   overflow: hidden;
 }
-.animate-scanline-sweep::after {
+
+.animate-scanline-sweep::before {
   content: "";
   position: absolute;
-  top: -50%;
-  left: 0;
+  top: 0;
+  left: -100%;
   width: 100%;
-  height: 20%;
-  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.2), transparent);
-  animation: scanlineSweep 4s linear infinite;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  animation: scanlineSweep 3s linear infinite;
   pointer-events: none;
-  z-index: 10;
 }
 
 @keyframes scanlineSweep {
-  0% { top: -20%; }
-  100% { top: 120%; }
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
 }
 
-/* 9. Typing Cursor - For Text */
+/* 9. Typing Effect - For Subtitles */
 .animate-typing {
   overflow: hidden;
   white-space: nowrap;
   border-right: 2px solid white;
-  width: 0;
-  animation: typing 2s steps(30, end) forwards, blink-caret 0.75s step-end infinite;
+  animation: typing 3s steps(30, end), blink-caret 0.75s step-end infinite;
 }
 
 @keyframes typing {
-  from { width: 0 }
-  to { width: 100% }
+  from { width: 0; }
+  to { width: 100%; }
 }
 
 @keyframes blink-caret {
-  from, to { border-color: transparent }
-  50% { border-color: white }
+  from, to { border-color: transparent; }
+  50% { border-color: white; }
+}
+
+/* 10. Flash - For Selection */
+.animate-flash {
+  animation: flash 0.2s ease-out;
+}
+
+@keyframes flash {
+  0% { opacity: 0.8; }
+  100% { opacity: 0; }
 }

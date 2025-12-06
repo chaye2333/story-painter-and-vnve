@@ -1,7 +1,8 @@
 <template>
   <n-layout class="min-h-screen relative overflow-hidden bg-black">
+    <div id="top-anchor" class="absolute top-0 left-0 w-full h-1 pointer-events-none"></div>
     <!-- Parallax Background Scene -->
-    <parallax-scene>
+    <parallax-scene @openIntro="showIntro = true">
       <template #moon>
         <div class="black-moon">
           <div class="moon-crater c1"></div>
@@ -14,31 +15,79 @@
     <interactive-grid class="opacity-30" />
     
     <!-- Retro Header -->
-    <header class="border-b border-white p-4 mb-8 flex justify-between items-end relative z-10">
-      <div>
-        <h1 class="text-4xl font-bold uppercase tracking-tighter leading-none glitch-text animate-glitch-enter" data-text="Story Painter">Story Painter</h1>
-        <div class="text-xs mt-1 opacity-70 animate-fade-in-up" style="animation-delay: 0.5s">v2.5.4 // 日志处理器 // LOG_PROCESSOR // READY</div>
+    <header class="mb-8 relative z-10 pt-6 px-4 md:px-8 pointer-events-none">
+      <!-- Top decorative line (Optional, kept minimal) -->
+      <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+
+      <div class="relative flex flex-col md:flex-row justify-between items-start md:items-end gap-6 pointer-events-none">
+        
+        <!-- Left: Title Section -->
+        <div class="flex flex-col gap-1 relative pointer-events-auto">
+          <!-- Decorative Corner for Title Area -->
+          <div class="absolute -left-4 -top-4 w-8 h-8 border-t border-l border-white/30 hidden md:block"></div>
+
+          <!-- Small decorative label -->
+          <div class="flex items-center gap-2 text-[10px] md:text-xs text-gray-400 font-mono tracking-[0.2em] opacity-70 mb-1 pl-1">
+             <span class="w-1 h-1 bg-green-500 rounded-full animate-pulse"></span>
+             <span>SYSTEM_ONLINE</span>
+             <span class="hidden md:inline">::</span>
+             <span class="hidden md:inline">V2.5.4</span>
+          </div>
+
+          <!-- Main Title -->
+          <h1 class="relative text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none select-none cursor-pointer glitch-hover mix-blend-screen animate-glitch-enter" data-text="Story Painter" @click="reloadPage">
+            <!-- Core text -->
+            <span class="relative z-10 text-transparent bg-clip-text bg-gradient-to-b from-white via-gray-100 to-gray-400 drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]">Story Painter</span>
+            
+            <!-- Decorative elements around title -->
+            <div class="absolute -left-6 top-0 h-full w-1 bg-white/10 hidden md:block"></div>
+          </h1>
+          
+          <!-- Subtitle / Description -->
+          <div class="flex items-center gap-3 mt-3 text-xs md:text-sm font-mono text-gray-300 tracking-widest uppercase pl-1">
+            <span class="bg-white/10 border border-white/20 px-1 text-[10px]">LOG_PROC</span>
+            <span class="opacity-70 text-[10px] md:text-xs">日志处理器 // READY</span>
+            <!-- Decorative line extending right -->
+            <div class="h-[1px] w-12 bg-white/30"></div>
+          </div>
+        </div>
+
+        <!-- Right: Controls & Status (Simplified Background) -->
+        <div class="flex flex-col items-end gap-2 w-full md:w-auto pointer-events-auto">
+          <!-- Decorative metrics (Moved to be very subtle and right-aligned) -->
+          <div class="hidden md:flex gap-4 text-[10px] font-mono text-gray-500/60 tracking-wider">
+            <span>CPU: <span class="text-gray-400">NORMAL</span></span>
+            <span>NET: <span class="text-gray-400">CONNECTED</span></span>
+          </div>
+
+          <!-- Button Group (Transparent background) -->
+          <div class="flex items-center gap-4">
+            <retro-button icon @click="toggleBgm" no-border no-grid class="hover:text-green-400 transition-colors opacity-80 hover:opacity-100">
+              <n-icon size="20">
+                <VolumeUpFilled v-if="isBgmOn" />
+                <VolumeMuteFilled v-else />
+              </n-icon>
+            </retro-button>
+            
+            <retro-button icon @click="openGithub" no-border no-grid class="hover:text-blue-400 transition-colors opacity-80 hover:opacity-100">
+              <n-icon size="20">
+                <logo-github />
+              </n-icon>
+            </retro-button>
+
+            <retro-button @click="backV1" class="!px-2 !py-1 !text-[10px] !h-auto tracking-widest opacity-80 hover:opacity-100" no-border>
+              官网
+            </retro-button>
+          </div>
+        </div>
       </div>
-      <div class="flex gap-4 items-center">
-        <retro-button icon @click="toggleBgm" no-border no-grid>
-          <n-icon size="20">
-            <VolumeUpFilled v-if="isBgmOn" />
-            <VolumeMuteFilled v-else />
-          </n-icon>
-        </retro-button>
-        <retro-button icon @click="openGithub" no-border no-grid>
-          <n-icon size="20">
-            <logo-github />
-          </n-icon>
-        </retro-button>
-        <retro-button @click="backV1" class="!px-2 !text-xs">
-          官网
-        </retro-button>
-      </div>
+      
+      <!-- Bottom Divider (Gradient to be less intrusive) -->
+      <div class="w-full h-[1px] bg-gradient-to-r from-white/50 via-white/10 to-transparent mt-6"></div>
     </header>
 
-    <n-layout-content class="px-4 pb-12 bg-transparent relative z-10">
-      <div class="max-w-[1200px] mx-auto border border-white p-1 relative bg-black/90 backdrop-blur-sm animate-scanline-sweep">
+    <n-layout-content class="px-4 pb-12 bg-transparent relative z-10 pointer-events-none">
+      <div class="max-w-[1200px] mx-auto border border-white p-1 relative bg-black/90 backdrop-blur-sm animate-scanline-sweep pointer-events-auto">
         <!-- Decorative corners -->
         <div class="absolute -top-1 -left-1 w-2 h-2 bg-white"></div>
         <div class="absolute -top-1 -right-1 w-2 h-2 bg-white"></div>
@@ -46,9 +95,9 @@
         <div class="absolute -bottom-1 -right-1 w-2 h-2 bg-white"></div>
 
         <div class="border border-white p-6 animate-pulse-glow">
-          <div class="flex justify-between items-center mb-6 border-b border-white pb-2">
-            <h2 class="text-xl font-bold uppercase animate-typing inline-block align-middle">>> 处理单元 // PROCESSING UNIT</h2>
-            <n-text class="text-xs">SealDice Group: 524364253</n-text>
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-white pb-2 gap-2">
+            <h2 class="text-sm md:text-xl font-bold uppercase animate-typing inline-block align-middle break-all">>> 处理单元 // PROCESSING UNIT</h2>
+            <n-text class="text-xs self-end md:self-auto">SealDice Group: 524364253</n-text>
           </div>
 
           <div class="flex flex-col lg:flex-row gap-6 items-start">
@@ -143,7 +192,31 @@
           </div>
         </div>
       </div>
+
+      <footer class="max-w-[1200px] mx-auto border-t border-white/20 p-6 mt-8 bg-black/80 backdrop-blur-sm text-xs text-[#666] relative z-10 pointer-events-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div class="flex flex-col gap-2 items-center md:items-start">
+             <div>QQ反馈群: 241639081</div>
+             <div class="opacity-70">被拖入抽象宇宙被世人忘却的月亮，现在你重新看到了它</div>
+          </div>
+          
+          <div class="flex flex-col gap-2 items-center md:items-end">
+             <button @click="scrollToTop" class="hover:text-white transition-colors uppercase tracking-widest cursor-pointer">
+               [ ▲ RETURN_TO_TOP ]
+             </button>
+             <div class="font-mono">{{ currentTime }}</div>
+          </div>
+        </div>
+      </footer>
     </n-layout-content>
+    
+    <download-modal 
+      :visible="downloadModalVisible" 
+      :progress="downloadModalProgress" 
+      :status="downloadModalStatus" 
+    />
+
+    <intro-view v-if="showIntro" @close="showIntro = false" />
   </n-layout>
 </template>
 
@@ -183,6 +256,8 @@ import { compressors } from 'hyparquet-compressors'
 import { audioManager } from "./utils/audio";
 import InteractiveGrid from "./components/InteractiveGrid.vue";
 import ParallaxScene from "./components/ParallaxScene.vue";
+import DownloadModal from "./components/DownloadModal.vue";
+import IntroView from "./components/IntroView.vue";
 
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
@@ -201,6 +276,34 @@ const notification = useNotification()
 
 const loading = ref<boolean>(false)
 const isBgmOn = ref(false)
+const showIntro = ref(false)
+
+const currentTime = ref('')
+let timeInterval: number | null = null
+
+const updateTime = () => {
+  const now = new Date()
+  currentTime.value = now.toLocaleTimeString()
+}
+
+const scrollToTop = () => {
+  const el = document.getElementById('top-anchor')
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth' })
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
+
+onMounted(() => {
+  updateTime()
+  timeInterval = window.setInterval(updateTime, 1000)
+})
+
+onUnmounted(() => {
+  if (timeInterval) clearInterval(timeInterval)
+})
+
 
 const playHover = () => {
   audioManager.playHover()
@@ -283,6 +386,11 @@ const previewClick = (mode: 'preview' | 'bbs' | 'bbspineapple' | 'trg') => {
       break;
   }
   showPreview();
+}
+
+const reloadPage = () => {
+  // Clear query parameters to return to "Home" state, effectively resetting the app
+  window.location.href = window.location.pathname;
 }
 
 function setupUA() {
@@ -445,9 +553,51 @@ onMounted(async () => {
   })
 });
 
+const downloadModalVisible = ref(false);
+const downloadModalProgress = ref(0);
+const downloadModalStatus = ref('');
+
+const startDownloadAnimation = (callback: () => void) => {
+  downloadModalVisible.value = true;
+  downloadModalProgress.value = 0;
+  downloadModalStatus.value = 'INITIALIZING';
+  
+  let progress = 0;
+  const interval = setInterval(() => {
+    // Random increment for natural feel
+    const increment = Math.random() * 15 + 5;
+    progress += increment;
+    
+    if (progress > 100) progress = 100;
+    downloadModalProgress.value = progress;
+    
+    if (progress < 30) {
+      downloadModalStatus.value = 'GATHERING MOON DUST...';
+    } else if (progress < 70) {
+      downloadModalStatus.value = 'WEAVING MEMORIES...';
+    } else if (progress < 95) {
+      downloadModalStatus.value = 'RECORDING TO TAPE...';
+    } else {
+      downloadModalStatus.value = 'READY';
+    }
+    
+    if (progress >= 100) {
+      clearInterval(interval);
+      setTimeout(() => {
+        callback();
+        setTimeout(() => {
+          downloadModalVisible.value = false;
+        }, 500);
+      }, 500);
+    }
+  }, 200);
+};
+
 function exportRecordRaw() {
   browserAlert()
-  exportFileRaw(store.editor.state.doc.toString())
+  startDownloadAnimation(() => {
+    exportFileRaw(store.editor.state.doc.toString())
+  })
 }
 
 function exportRecordQQ() {
@@ -468,40 +618,42 @@ function exportRecordDOC() {
     message.warning('你当前处于移动端环境，已知只有WPS能够查看生成的Word文件，且无法看图！使用PC打开可以查看图片。')
   }
 
-  const solveImg = (el: Element) => {
-    if (el.tagName === 'IMG') {
-      let width = el.clientWidth;
-      let height = el.clientHeight;
-      if (width === 0) {
-        width = 300;
-        height = 300;
+  startDownloadAnimation(() => {
+    const solveImg = (el: Element) => {
+      if (el.tagName === 'IMG') {
+        let width = el.clientWidth;
+        let height = el.clientHeight;
+        if (width === 0) {
+          width = 300;
+          height = 300;
+        }
+        el.setAttribute('width', `${width}`)
+        el.setAttribute('height', `${height}`)
       }
-      el.setAttribute('width', `${width}`)
-      el.setAttribute('height', `${height}`)
+      for (let i = 0; i < el.children.length; i += 1) {
+        solveImg(el.children[i])
+      }
     }
-    for (let i = 0; i < el.children.length; i += 1) {
-      solveImg(el.children[i])
+
+    const el = document.createElement('span');
+    const elRoot = document.createElement('div');
+    const items = [];
+
+    showPreview()
+    for (let i of previewItems.value) {
+      if (i.isRaw) continue;
+      if (store.isHiddenLogItem(i)) continue;
+
+      const html = h(PreviewItem, { source: i });
+      render(html, el);
+
+      const c = el;
+      solveImg(c);
+      items.push(c.innerHTML);
     }
-  }
 
-  const el = document.createElement('span');
-  const elRoot = document.createElement('div');
-  const items = [];
-
-  showPreview()
-  for (let i of previewItems.value) {
-    if (i.isRaw) continue;
-    if (store.isHiddenLogItem(i)) continue;
-
-    const html = h(PreviewItem, { source: i });
-    render(html, el);
-
-    const c = el;
-    solveImg(c);
-    items.push(c.innerHTML);
-  }
-
-  exportFileDoc(items.join('\n'));
+    exportFileDoc(items.join('\n'));
+  })
 }
 
 function exportRecordTalkDOC() {
@@ -510,39 +662,41 @@ function exportRecordTalkDOC() {
     message.warning('你当前处于移动端环境，已知只有WPS能够查看生成的Word文件，且无法看图！使用PC打开可以查看图片。')
   }
 
-  const solveImg = (el: Element) => {
-    if (el.tagName === 'IMG') {
-      let width = el.clientWidth;
-      let height = el.clientHeight;
-      if (width === 0) {
-        width = 300;
-        height = 300;
+  startDownloadAnimation(() => {
+    const solveImg = (el: Element) => {
+      if (el.tagName === 'IMG') {
+        let width = el.clientWidth;
+        let height = el.clientHeight;
+        if (width === 0) {
+          width = 300;
+          height = 300;
+        }
+        el.setAttribute('width', `${width}`)
+        el.setAttribute('height', `${height}`)
       }
-      el.setAttribute('width', `${width}`)
-      el.setAttribute('height', `${height}`)
+      for (let i = 0; i < el.children.length; i += 1) {
+        solveImg(el.children[i])
+      }
     }
-    for (let i = 0; i < el.children.length; i += 1) {
-      solveImg(el.children[i])
+
+    const el = document.createElement('span');
+    const elRoot = document.createElement('div');
+    const items: string[] = [];
+
+    showPreview()
+    for (let i of previewItems.value) {
+      if (i.isRaw) continue;
+      if (store.isHiddenLogItem(i)) continue;
+
+      const html = h(PreviewTableTR, { source: i });
+      render(html, el);
+
+      const c = el;
+      solveImg(c);
+      items.push(c.innerHTML);
     }
-  }
-
-  const el = document.createElement('span');
-  const elRoot = document.createElement('div');
-  const items: string[] = [];
-
-  showPreview()
-  for (let i of previewItems.value) {
-    if (i.isRaw) continue;
-    if (store.isHiddenLogItem(i)) continue;
-
-    const html = h(PreviewTableTR, { source: i });
-    render(html, el);
-
-    const c = el;
-    solveImg(c);
-    items.push(c.innerHTML);
-  }
-  exportFileDoc(`<table style="border-collapse: collapse;"><tbody>${items.join('\n')}</tbody></table>`);
+    exportFileDoc(`<table style="border-collapse: collapse;"><tbody>${items.join('\n')}</tbody></table>`);
+  })
 }
 
 const readElementColor = (el: HTMLElement | null): string | undefined => {
@@ -655,49 +809,51 @@ const extractMessageLines = (el: HTMLElement | null): string[] => {
 
 function exportRecordDocx() {
   browserAlert()
-  showPreview()
+  startDownloadAnimation(() => {
+    showPreview()
 
-  const entries: DocxExportEntry[] = []
+    const entries: DocxExportEntry[] = []
 
-  for (const item of previewItems.value) {
-    if (item.isRaw) continue
-    if (store.isHiddenLogItem(item)) continue
+    for (const item of previewItems.value) {
+      if (item.isRaw) continue
+      if (store.isHiddenLogItem(item)) continue
 
-    const mountPoint = document.createElement('div')
-    const vnode = h(PreviewItem, { source: item })
-    render(vnode, mountPoint)
+      const mountPoint = document.createElement('div')
+      const vnode = h(PreviewItem, { source: item })
+      render(vnode, mountPoint)
 
-    const host = mountPoint.firstElementChild as HTMLElement | null
-    if (!host) {
+      const host = mountPoint.firstElementChild as HTMLElement | null
+      if (!host) {
+        render(null, mountPoint)
+        continue
+      }
+
+      const timeEl = host.querySelector('._time') as HTMLElement | null
+      const nicknameEl = host.querySelector('._nickname') as HTMLElement | null
+      const messageEl = host.querySelector('._message') as HTMLElement | null
+
+      const entry: DocxExportEntry = {
+        time: (timeEl?.textContent ?? '').trim(),
+        timeColor: readElementColor(timeEl),
+        nickname: (nicknameEl?.textContent ?? '').trim(),
+        nicknameColor: readElementColor(nicknameEl),
+        messageLines: extractMessageLines(messageEl),
+        messageColor: readElementColor(messageEl),
+      }
+
+      entries.push(entry)
       render(null, mountPoint)
-      continue
     }
 
-    const timeEl = host.querySelector('._time') as HTMLElement | null
-    const nicknameEl = host.querySelector('._nickname') as HTMLElement | null
-    const messageEl = host.querySelector('._message') as HTMLElement | null
-
-    const entry: DocxExportEntry = {
-      time: (timeEl?.textContent ?? '').trim(),
-      timeColor: readElementColor(timeEl),
-      nickname: (nicknameEl?.textContent ?? '').trim(),
-      nicknameColor: readElementColor(nicknameEl),
-      messageLines: extractMessageLines(messageEl),
-      messageColor: readElementColor(messageEl),
+    if (!entries.length) {
+      message.warning('没有可导出的内容')
+      return
     }
 
-    entries.push(entry)
-    render(null, mountPoint)
-  }
-
-  if (!entries.length) {
-    message.warning('没有可导出的内容')
-    return
-  }
-
-  exportFileDocx(entries, '跑团记录.docx').catch((err) => {
-    console.error(err)
-    message.error('Docx 导出失败，请稍后重试')
+    exportFileDocx(entries, '跑团记录.docx').catch((err) => {
+      console.error(err)
+      message.error('Docx 导出失败，请稍后重试')
+    })
   })
 }
 

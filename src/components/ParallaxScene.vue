@@ -6,8 +6,16 @@ const { x, y } = useMouse({ type: 'client' });
 const { width, height } = useWindowSize();
 const { pixelRatio } = useDevicePixelRatio();
 
+const emit = defineEmits<{
+  (e: 'openIntro'): void
+}>();
+
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const ruinsCanvasRef = ref<HTMLCanvasElement | null>(null);
+
+const handleCelestialClick = () => {
+  emit('openIntro');
+};
 
 // Mouse normalized position (-0.5 to 0.5)
 const mouseXNorm = computed(() => {
@@ -222,7 +230,7 @@ watch([width, height], () => {
     
     <!-- Moon (Parallax Layer 1 - Furthest) -->
     <!-- Moves OPPOSITE to mouse, very slowly -->
-    <div class="absolute transition-transform duration-75 ease-out will-change-transform z-10"
+    <div class="absolute transition-transform duration-75 ease-out will-change-transform z-[100]"
          :style="{ 
             top: '10%', 
             left: '50%', 
@@ -237,22 +245,33 @@ watch([width, height], () => {
         </div>
 
         <!-- Secondary Planet (Orbiting/Positioned away) -->
-        <div class="absolute -right-32 -bottom-12 w-12 h-12 rounded-full bg-[#111] border border-gray-600 overflow-hidden shadow-[inset_-4px_-4px_10px_rgba(0,0,0,0.8)] animate-float-slow">
-          <!-- Craters -->
-          <div class="absolute top-2 left-3 w-2 h-2 bg-black/40 rounded-full"></div>
-          <div class="absolute bottom-3 right-4 w-3 h-3 bg-black/30 rounded-full"></div>
-          
-          <!-- Planet Halo -->
-          <div class="absolute inset-0 rounded-full animate-halo-pulse-2 pointer-events-none mix-blend-screen"></div>
+        <div class="absolute -right-32 -bottom-12 z-[101] animate-float-slow pointer-events-none">
+          <div 
+            class="w-16 h-16 rounded-full bg-[#111] border border-gray-500 overflow-hidden shadow-[inset_-4px_-4px_10px_rgba(0,0,0,0.8)] animate-intermittent-glow cursor-pointer transition-all duration-500 group relative hover:scale-125 hover:shadow-[0_0_30px_rgba(255,255,255,0.8)] hover:border-white pointer-events-auto"
+            @click="handleCelestialClick"
+          >
+            <!-- Hover Reticle (Cursor Hint) -->
+            <div class="absolute -inset-6 border border-dashed border-white/60 rounded-full opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300"></div>
+
+            <!-- Craters -->
+            <div class="absolute top-2 left-3 w-2 h-2 bg-black/40 rounded-full group-hover:bg-black/60 transition-colors"></div>
+            <div class="absolute bottom-3 right-4 w-3 h-3 bg-black/30 rounded-full group-hover:bg-black/50 transition-colors"></div>
+            
+            <!-- Planet Halo (Enhanced for breathing effect) -->
+            <div class="absolute inset-0 rounded-full animate-halo-pulse-2 pointer-events-none mix-blend-screen group-hover:opacity-100 transition-opacity"></div>
+            
+            <!-- Click Area Expander -->
+            <div class="absolute -inset-4 rounded-full bg-transparent pointer-events-auto z-50"></div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- City (Parallax Layer 2 - Mid) -->
-    <canvas ref="canvasRef" class="absolute inset-0 opacity-100"></canvas>
+    <canvas ref="canvasRef" class="absolute inset-0 opacity-100 pointer-events-none"></canvas>
 
     <!-- Ruins (Parallax Layer 3 - Foreground) -->
-    <canvas ref="ruinsCanvasRef" class="absolute inset-0"></canvas>
+    <canvas ref="ruinsCanvasRef" class="absolute inset-0 pointer-events-none"></canvas>
     
     <!-- Vignette -->
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_50%,black_100%)] pointer-events-none"></div>
@@ -290,5 +309,36 @@ watch([width, height], () => {
 
 .animate-halo-pulse-2 {
   animation: halo-pulse-2 8s ease-in-out infinite 1s; /* Offset slightly */
+}
+
+@keyframes intermittent-glow {
+  0%, 100% { box-shadow: inset -4px -4px 10px rgba(0,0,0,0.8), 0 0 0 rgba(255,255,255,0); border-color: #4b5563; }
+  50% { box-shadow: inset -4px -4px 10px rgba(0,0,0,0.8), 0 0 20px rgba(255,255,255,0.6); border-color: #e5e7eb; }
+}
+
+.animate-intermittent-glow {
+  animation: intermittent-glow 4s ease-in-out infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-blink {
+  animation: blink 0.5s step-end infinite;
+}
+
+.glitch-text {
+  text-shadow: 2px 0 rgba(255, 255, 255, 0.5), -2px 0 rgba(100, 100, 100, 0.5);
 }
 </style>

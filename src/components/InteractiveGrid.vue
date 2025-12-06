@@ -98,8 +98,7 @@ onUnmounted(() => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  pointer-events: none; /* Let clicks pass through */
-  z-index: 1; /* Above background moon, below content */
-  /* mix-blend-mode: overlay; Removed for better visibility on dark bg */
+  pointer-events: none;
+  z-index: 1;
 }
 </style>

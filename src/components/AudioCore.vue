@@ -101,7 +101,7 @@ const updateWaveform = () => {
   for (let i = 0; i < bufferLength; i++) {
     const v = dataArray[i] / 128.0;
     // Increase amplitude: (v - 1) is deviation from center. Multiply by scale factor (e.g. 3)
-    const amplitude = 3.0; 
+    const amplitude = 10.0; 
     const y = ((v - 1) * amplitude + 1) * height / 2;
     
     // Clamp y to be within canvas somewhat, or let it clip
@@ -147,8 +147,8 @@ onUnmounted(() => {
       <div class="text-xs font-bold text-[#666] tracking-widest uppercase">
         AUDIO_CORE // {{ isBgmOn ? 'ONLINE' : 'OFFLINE' }}
       </div>
-      <div class="status-light w-2 h-2 rounded-full transition-colors duration-300"
-           :class="isBgmOn ? 'bg-green-500 shadow-[0_0_5px_rgba(34,197,94,0.8)]' : 'bg-[#333]'">
+      <div class="status-light w-3 h-3 rounded-full transition-all duration-300"
+           :class="isBgmOn ? 'bg-green-400 shadow-[0_0_15px_rgba(74,222,128,1),0_0_30px_rgba(74,222,128,0.6)]' : 'bg-[#333]'">
       </div>
     </div>
 
