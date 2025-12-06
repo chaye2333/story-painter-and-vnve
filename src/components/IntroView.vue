@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed inset-0 z-[100] bg-black font-mono overflow-y-auto scrollbar-thin">
+  <div class="fixed inset-0 z-[100] bg-black font-mono overflow-y-auto scrollbar-thin" @scroll="handleScroll">
     <!-- Loading Overlay -->
     <div 
       class="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center transition-transform duration-1000 ease-in-out will-change-transform font-mono"
@@ -33,7 +33,7 @@
 
     <!-- Close Button (Moved to Top Left, Fixed position to remain accessible) -->
     <button 
-      @click="$emit('close')" 
+      @click="handleClose" 
       class="fixed top-6 left-8 text-gray-500 hover:text-white transition-colors z-[150] flex items-center gap-2 group mix-blend-difference"
     >
       <span class="font-mono text-xl group-hover:rotate-90 transition-transform">×</span>
@@ -50,7 +50,7 @@
         <img :src="xufuImg" alt="Xu Fu" class="w-full h-full object-cover object-top opacity-90 glitch-img" />
         
         <!-- Enhanced Scanline overlay -->
-        <div class="absolute inset-0 pointer-events-none bg-scanlines opacity-20"></div>
+        <div class="absolute inset-0 pointer-events-none bg-scanlines opacity-50"></div>
         
         <!-- Moving Scan Bar -->
         <div class="absolute top-0 left-0 w-full h-1 bg-white/30 shadow-[0_0_10px_rgba(255,255,255,0.5)] animate-scan-bar pointer-events-none z-10"></div>
@@ -167,12 +167,26 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { useMouse, useWindowSize, useDevicePixelRatio } from '@vueuse/core';
+import { useMouse, useWindowSize, useDevicePixelRatio, useThrottleFn } from '@vueuse/core';
 import xufuImg from '../assets/xufu_avatar.png';
+import { audioManager } from '../utils/audio';
 
 const bgRef = ref<HTMLElement | null>(null);
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const isLoading = ref(true);
+
+const emit = defineEmits<{
+  (e: 'close'): void
+}>();
+
+const handleClose = () => {
+  audioManager.playClick();
+  emit('close');
+};
+
+const handleScroll = useThrottleFn(() => {
+  audioManager.playGearScroll();
+}, 150);
 
 // Grid Logic
 const { x, y } = useMouse({ type: 'client' });
@@ -247,10 +261,6 @@ const resize = () => {
   const ctx = canvas.getContext('2d');
   if (ctx) ctx.scale(pixelRatio.value, pixelRatio.value);
 };
-
-defineEmits<{
-  (e: 'close'): void
-}>();
 
 onMounted(() => {
   // Start loading animation

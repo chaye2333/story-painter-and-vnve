@@ -48,5 +48,7 @@ declare module 'vue' {
     PreviewTrg: typeof import('./components/previews/preview-trg.vue')['default']
     PreviewTrgItem: typeof import('./components/previews/preview-trg-item.vue')['default']
     RetroButton: typeof import('./components/RetroButton.vue')['default']
+    ShatteredMoon: typeof import('./components/ShatteredMoon.vue')['default']
+    SteampunkBackground: typeof import('./components/SteampunkBackground.vue')['default']
   }
 }

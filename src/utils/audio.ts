@@ -96,6 +96,43 @@ class SoundManager {
     osc.stop(this.context.currentTime + 0.08);
   }
 
+  playGearScroll() {
+    if (!this.context) return;
+    this.ensureContext();
+    
+    // Low, heavy mechanical grind (Deepened for weight)
+    const osc = this.context.createOscillator();
+    const gain = this.context.createGain();
+    const filter = this.context.createBiquadFilter();
+    
+    // Rough, low-pitched sawtooth/square mix (using sawtooth here for grit)
+    osc.type = 'sawtooth';
+    // Pitch drops slightly to simulate friction/weight (Lowered from 60->40 to 40->25)
+    osc.frequency.setValueAtTime(40, this.context.currentTime);
+    osc.frequency.linearRampToValueAtTime(25, this.context.currentTime + 0.15);
+    
+    // Lowpass to make it heavy and muffled (Lowered from 400 to 200)
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(200, this.context.currentTime);
+    filter.Q.value = 2; // Increased Q slightly for a bit of resonance/body
+
+    // Envelope (Longer release for "weight")
+    gain.gain.setValueAtTime(0.15, this.context.currentTime); // Increased initial gain slightly as it's lower freq
+    gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.2);
+    
+    osc.connect(filter);
+    filter.connect(gain);
+    
+    if (this.analyser) {
+        gain.connect(this.analyser);
+    } else {
+        gain.connect(this.context.destination);
+    }
+    
+    osc.start();
+    osc.stop(this.context.currentTime + 0.2);
+  }
+
   toggleBgm(): boolean {
     if (!this.context) return false;
     this.ensureContext();

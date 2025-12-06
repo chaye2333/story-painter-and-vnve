@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import { useMouse, useWindowSize, useDevicePixelRatio } from '@vueuse/core';
+import SteampunkBackground from './SteampunkBackground.vue';
+import { audioManager } from '../utils/audio';
 
 const { x, y } = useMouse({ type: 'client' });
 const { width, height } = useWindowSize();
@@ -14,6 +16,7 @@ const canvasRef = ref<HTMLCanvasElement | null>(null);
 const ruinsCanvasRef = ref<HTMLCanvasElement | null>(null);
 
 const handleCelestialClick = () => {
+  audioManager.playClick();
   emit('openIntro');
 };
 
@@ -228,6 +231,9 @@ watch([width, height], () => {
     <!-- Stars / Fog (Static Background) -->
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(20,20,20,1)_0%,rgba(0,0,0,1)_100%)]"></div>
     
+    <!-- Steampunk Mechanical Background Layer -->
+    <steampunk-background />
+
     <!-- Moon (Parallax Layer 1 - Furthest) -->
     <!-- Moves OPPOSITE to mouse, very slowly -->
     <div class="absolute transition-transform duration-75 ease-out will-change-transform z-[100]"
@@ -268,10 +274,10 @@ watch([width, height], () => {
     </div>
 
     <!-- City (Parallax Layer 2 - Mid) -->
-    <canvas ref="canvasRef" class="absolute inset-0 opacity-100 pointer-events-none"></canvas>
+    <canvas ref="canvasRef" class="absolute inset-0 opacity-100 pointer-events-none z-30"></canvas>
 
     <!-- Ruins (Parallax Layer 3 - Foreground) -->
-    <canvas ref="ruinsCanvasRef" class="absolute inset-0 pointer-events-none"></canvas>
+    <canvas ref="ruinsCanvasRef" class="absolute inset-0 pointer-events-none z-40"></canvas>
     
     <!-- Vignette -->
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_50%,black_100%)] pointer-events-none"></div>

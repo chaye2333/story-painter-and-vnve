@@ -1,5 +1,5 @@
 <template>
-  <n-layout class="min-h-screen relative overflow-hidden bg-black">
+  <n-layout class="min-h-screen relative overflow-hidden bg-black scrollbar-thin" @scroll="handleScroll">
     <div id="top-anchor" class="absolute top-0 left-0 w-full h-1 pointer-events-none"></div>
     <!-- Parallax Background Scene -->
     <parallax-scene @openIntro="showIntro = true">
@@ -198,7 +198,7 @@
         <div class="flex flex-col md:flex-row justify-between items-center gap-4">
           <div class="flex flex-col gap-2 items-center md:items-start">
              <div>QQ反馈群: 241639081</div>
-             <div class="opacity-70">“那颗被放逐至抽象宇宙、遗落在记忆边缘的月亮，此刻，终在你的凝视中重获新生。”</div>
+             <div class="opacity-70 text-center md:text-left">“那颗被放逐至抽象宇宙、遗落在记忆边缘的月亮，<br class="md:hidden" />此刻，你与它坠入同一个地界了”</div>
           </div>
           
           <div class="flex flex-col gap-2 items-center md:items-end">
@@ -247,7 +247,7 @@ import { setCharInfo } from './logManager/importers/_logImpoter'
 import { msgCommandFormat, msgImageFormat, msgIMUseridFormat, msgOffTopicFormat, msgAtFormat } from "./utils";
 import { NButton, NText, useMessage, useModal, useNotification } from "naive-ui";
 import { User, LogoGithub, Delete as IconDelete, VolumeUpFilled, VolumeMuteFilled } from '@vicons/carbon'
-import { breakpointsTailwind, useBreakpoints, useDark, useToggle } from '@vueuse/core'
+import { breakpointsTailwind, useBreakpoints, useDark, useToggle, useThrottleFn } from '@vueuse/core'
 import OptionView from "./components/OptionView.vue";
 import randomColor from "randomcolor";
 
@@ -259,6 +259,11 @@ import InteractiveGrid from "./components/InteractiveGrid.vue";
 import ParallaxScene from "./components/ParallaxScene.vue";
 import DownloadModal from "./components/DownloadModal.vue";
 import IntroView from "./components/IntroView.vue";
+
+const handleScroll = useThrottleFn(() => {
+  audioManager.playGearScroll();
+}, 150);
+
 
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
