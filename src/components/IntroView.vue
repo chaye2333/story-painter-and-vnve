@@ -139,8 +139,8 @@
             <!-- Contact / QQ Link -->
             <div class="border border-white/20 p-4 relative group hover:bg-white/5 transition-colors content-item cursor-pointer">
               <div class="absolute top-0 left-0 bg-white text-black text-[10px] px-1 font-bold">CONTACT</div>
-              <a href="tencent://message/?uin=3197624806&Site=StoryPainter&Menu=yes" class="flex justify-between items-center mt-2 text-decoration-none">
-                 <span class="text-gray-400 font-mono text-xs">QQ LINK</span>
+              <a href="https://res.abeim.cn/api/qq/?qq=3197624806" target="_blank" class="flex justify-between items-center mt-2 text-decoration-none">
+                 <span class="text-gray-400 font-mono text-xs">QQ LINK (Mobile)</span>
                  <span class="text-white font-mono font-bold hover:text-pink-500 transition-colors">3197624806 <span class="text-[10px] align-top">↗</span></span>
               </a>
             </div>
