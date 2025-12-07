@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed inset-0 z-[100] bg-black font-mono overflow-y-auto scrollbar-thin" @scroll="handleScroll">
+  <div class="fixed inset-0 z-[100] bg-black font-mono overflow-y-auto scrollbar-thin">
     <!-- Loading Overlay -->
     <div 
       class="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center transition-transform duration-1000 ease-in-out will-change-transform font-mono"
@@ -167,7 +167,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { useMouse, useWindowSize, useDevicePixelRatio, useThrottleFn } from '@vueuse/core';
+import { useMouse, useWindowSize, useDevicePixelRatio } from '@vueuse/core';
 import xufuImg from '../assets/xufu_avatar.png';
 import { audioManager } from '../utils/audio';
 
@@ -183,10 +183,6 @@ const handleClose = () => {
   audioManager.playClick();
   emit('close');
 };
-
-const handleScroll = useThrottleFn(() => {
-  audioManager.playGearScroll();
-}, 150);
 
 // Grid Logic
 const { x, y } = useMouse({ type: 'client' });
