@@ -100,24 +100,26 @@ class SoundManager {
     if (!this.context) return;
     this.ensureContext();
     
-    // Low, heavy mechanical grind (Deepened for weight)
+    // Softer, subtle mechanical tick (Less harsh)
     const osc = this.context.createOscillator();
     const gain = this.context.createGain();
     const filter = this.context.createBiquadFilter();
     
-    // Rough, low-pitched sawtooth/square mix (using sawtooth here for grit)
-    osc.type = 'sawtooth';
-    // Pitch drops slightly to simulate friction/weight (Lowered from 60->40 to 40->25)
-    osc.frequency.setValueAtTime(40, this.context.currentTime);
-    osc.frequency.linearRampToValueAtTime(25, this.context.currentTime + 0.15);
+    // Triangle wave is smoother than sawtooth but still has some character
+    osc.type = 'triangle';
     
-    // Lowpass to make it heavy and muffled (Lowered from 400 to 200)
+    // Lower pitch range for a "thud" rather than a "buzz"
+    osc.frequency.setValueAtTime(50, this.context.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(20, this.context.currentTime + 0.15);
+    
+    // Aggressive lowpass to remove all harsh high frequencies
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(200, this.context.currentTime);
-    filter.Q.value = 2; // Increased Q slightly for a bit of resonance/body
+    filter.frequency.setValueAtTime(120, this.context.currentTime);
+    filter.Q.value = 0.5; // No resonance (which causes "ringing")
 
-    // Envelope (Longer release for "weight")
-    gain.gain.setValueAtTime(0.15, this.context.currentTime); // Increased initial gain slightly as it's lower freq
+    // Softer envelope
+    gain.gain.setValueAtTime(0, this.context.currentTime);
+    gain.gain.linearRampToValueAtTime(0.1, this.context.currentTime + 0.02); // Soft attack
     gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.2);
     
     osc.connect(filter);
