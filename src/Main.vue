@@ -114,13 +114,15 @@
         <div class="relative px-4 pt-4 pb-0 flex flex-col md:flex-row justify-between items-end gap-4">
            <div class="text-[10px] md:text-xs text-gray-400 font-mono leading-relaxed opacity-90 tracking-wide flex flex-col gap-2">
               <div class="flex items-start gap-2 group">
-                <span class="text-white/40 group-hover:text-white/80 transition-colors mt-[2px] select-none">◆</span>
-                <p>你推开了门，这里是一间办公室，桌上只有一台老式终端，一轮巨大的月亮正挂在窗外，城镇沉睡着，这里是...现实吗？</p>
-              </div>
-              <div class="flex items-start gap-2 group">
-                <span class="text-gray-600 group-hover:text-gray-400 transition-colors mt-[2px] select-none">◇</span>
-                <p class="text-gray-500">这里的一切都有股令人怀旧的气息，仿佛有什么被掩埋着。</p>
-              </div>
+                  <span class="text-white/40 group-hover:text-white/80 transition-colors mt-[2px] select-none">◆</span>
+                  <p class="min-h-[1.5em]"><TypewriterText ref="tw1" key="tw1" :autoStart="false" text="你推开了门，这里是一间办公室，桌上只有一台老式终端，一轮巨大的月亮正挂在窗外，城镇沉睡着，这里是...现实吗？" :speed="120" :delay="800" @finished="startSecondTyping" /></p>
+                </div>
+                <div class="flex items-start gap-2 group">
+                  <span class="text-gray-600 group-hover:text-gray-400 transition-colors mt-[2px] select-none">◇</span>
+                  <p class="text-gray-500 min-h-[1.5em]">
+                    <TypewriterText v-if="showSecondSentence" key="tw2" text="这里的一切都有股令人怀旧的气息，仿佛有什么被掩埋着。" :speed="120" :delay="1000" />
+                  </p>
+                </div>
            </div>
            
            <!-- Decorative Status Indicators -->
@@ -297,6 +299,7 @@ import { nextTick, ref, onMounted, onUnmounted, watch, h, render, renderList, co
 import { useStore } from './store'
 import CodeMirror from './components/CodeMirror.vue'
 import RetroButton from './components/RetroButton.vue'
+import TypewriterText from './components/TypewriterText.vue'
 import AudioCore from './components/AudioCore.vue'
 import { debounce, delay } from 'lodash-es'
 import { exportFileRaw, exportFileQQ, exportFileIRC, exportFileDoc, exportFileDocx } from "./utils/exporter";
@@ -347,9 +350,17 @@ const message = useMessage()
 const modal = useModal()
 const notification = useNotification()
 
+const showSecondSentence = ref(false)
+const startSecondTyping = () => {
+  showSecondSentence.value = true
+}
+
+const tw1 = ref<InstanceType<typeof TypewriterText> | null>(null)
+
 const loading = ref<boolean>(false)
 const isBgmOn = ref(false)
 const showIntro = ref(false)
+
 
 const currentTime = ref('')
 let timeInterval: number | null = null
@@ -371,6 +382,11 @@ const scrollToTop = () => {
 onMounted(() => {
   updateTime()
   timeInterval = window.setInterval(updateTime, 1000)
+  
+  // Start typing animation after Main.vue entry animations (approx 1s)
+  setTimeout(() => {
+    tw1.value?.startTyping()
+  }, 3000)
 })
 
 onUnmounted(() => {
