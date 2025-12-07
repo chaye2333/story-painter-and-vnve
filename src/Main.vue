@@ -88,16 +88,55 @@
     </header>
 
     <n-layout-content class="px-4 pb-12 bg-transparent relative z-10 pointer-events-none">
-      <div class="max-w-[1200px] mx-auto border border-white p-1 relative bg-black/90 backdrop-blur-sm animate-scanline-sweep pointer-events-auto">
-        <!-- Decorative corners -->
-        <div class="absolute -top-1 -left-1 w-2 h-2 bg-white"></div>
-        <div class="absolute -top-1 -right-1 w-2 h-2 bg-white"></div>
-        <div class="absolute -bottom-1 -left-1 w-2 h-2 bg-white"></div>
-        <div class="absolute -bottom-1 -right-1 w-2 h-2 bg-white"></div>
+      <div class="max-w-[1200px] mx-auto relative bg-black/90 backdrop-blur-sm animate-scanline-sweep pointer-events-auto p-3 mt-4">
+        <!-- Complex Outer Border Construction -->
+        <div class="absolute inset-0 border-2 border-white/60 pointer-events-none"></div>
+        <div class="absolute inset-[4px] border border-white/30 pointer-events-none"></div>
+        
+        <!-- Decorative Corners (Top-Left) -->
+        <div class="absolute -top-1 -left-1 w-4 h-4 bg-black border-t-2 border-l-2 border-white flex items-center justify-center">
+            <div class="w-1 h-1 bg-white"></div>
+        </div>
+        <!-- Decorative Corners (Top-Right) -->
+        <div class="absolute -top-1 -right-1 w-4 h-4 bg-black border-t-2 border-r-2 border-white flex items-center justify-center">
+            <div class="w-1 h-1 bg-white"></div>
+        </div>
+        <!-- Decorative Corners (Bottom-Left) -->
+        <div class="absolute -bottom-1 -left-1 w-4 h-4 bg-black border-b-2 border-l-2 border-white flex items-center justify-center">
+            <div class="w-1 h-1 bg-white"></div>
+        </div>
+        <!-- Decorative Corners (Bottom-Right) -->
+        <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-black border-b-2 border-r-2 border-white flex items-center justify-center">
+            <div class="w-1 h-1 bg-white"></div>
+        </div>
 
-        <div class="border border-white p-6 animate-pulse-glow">
+        <!-- Narrative / Introduction Text Area -->
+        <div class="relative px-4 pt-4 pb-0 flex flex-col md:flex-row justify-between items-end gap-4">
+           <div class="text-[10px] md:text-xs text-gray-400 font-mono leading-relaxed opacity-90 tracking-wide flex flex-col gap-2">
+              <div class="flex items-start gap-2 group">
+                <span class="text-white/40 group-hover:text-white/80 transition-colors mt-[2px] select-none">◆</span>
+                <p>你推开了门，这里是一间办公室，桌上只有一台老式终端，一轮巨大的月亮正挂在窗外，城镇沉睡着，这里是...现实吗？</p>
+              </div>
+              <div class="flex items-start gap-2 group">
+                <span class="text-gray-600 group-hover:text-gray-400 transition-colors mt-[2px] select-none">◇</span>
+                <p class="text-gray-500">这里的一切都有股令人怀旧的气息，仿佛有什么被掩埋着。</p>
+              </div>
+           </div>
+           
+           <!-- Decorative Status Indicators -->
+           <div class="flex gap-1 opacity-50 mb-1">
+               <div class="w-1 h-1 bg-green-500 rounded-full animate-pulse"></div>
+               <div class="w-1 h-1 bg-white/50 rounded-full"></div>
+               <div class="w-1 h-1 bg-white/50 rounded-full"></div>
+           </div>
+        </div>
+
+        <div class="p-6 animate-pulse-glow relative mt-4">
+          <!-- Separator Line between Intro and Main Content -->
+          <div class="w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent mb-6"></div>
+
           <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-white pb-2 gap-2">
-            <h2 class="text-sm md:text-xl font-bold uppercase animate-typing inline-block align-middle break-all">>> 处理单元 // PROCESSING UNIT</h2>
+            <h2 class="text-sm md:text-xl font-bold uppercase animate-typing inline-block align-middle break-all">>> 处理单元 // PROCESSING UNIT <span class="header-blinker"></span></h2>
             <n-text class="text-xs self-end md:self-auto">SealDice Group: 524364253</n-text>
           </div>
 
@@ -120,64 +159,96 @@
                 <!-- PC List / Character Configuration -->
             <div class="mb-8">
               <h3 class="text-lg font-bold mb-4 uppercase border-b border-white border-dashed inline-block pr-8">
-                实体配置 // ENTITY CONFIG
+                实体配置 // ENTITY CONFIG <span class="header-blinker"></span>
               </h3>
               <div class="pc-list space-y-2 animate-stagger">
-                <div v-for="(i, index) in store.pcList" :key="index" class="flex flex-wrap items-center gap-2 p-2 border border-white/20 hover:border-white transition-colors" @mouseenter="playHover">
+                <div v-for="(i, index) in store.pcList" :key="index" class="flex flex-wrap items-center gap-2 p-2 terminal-card" @mouseenter="playHover">
+                <div class="flex items-center gap-2">
                    <retro-button class="px-2" @click="deletePc(index, i)"
                     :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG">
                       <n-icon><icon-delete /></n-icon>
                   </retro-button>
 
-                  <n-input :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG"
-                    v-model:value="i.name" class="w-40" placeholder="名字 // NAME" @focus="() => { nameFocus(i); playClick() }"
-                    @change="nameChanged(i)" />
+                  <div class="retro-input inline-block">
+                    <n-input :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG"
+                      v-model:value="i.name" class="w-40" placeholder="名字 // NAME" @focus="() => { nameFocus(i); playClick() }"
+                      @change="nameChanged(i)" />
+                  </div>
+                </div>
 
+                <div class="retro-input inline-block">
                   <n-input :disabled="true" v-model:value="i.IMUserId" class="w-64" placeholder="ID" />
+                </div>
 
-                  <n-select v-model:value="i.role" class="w-32"
-                    :options="[{ value: '主持人', label: 'KP/HOST' }, { value: '角色', label: 'PL/ACTOR' }, { value: '骰子', label: 'DICE' }, { value: '隐藏', label: 'HIDDEN' }]" 
-                    @update:value="playClick"/>
+                <div class="flex items-center gap-2">
+                  <div class="retro-select inline-block">
+                    <n-select v-model:value="i.role" class="w-32"
+                      :options="[{ value: '主持人', label: 'KP/HOST' }, { value: '角色', label: 'PL/ACTOR' }, { value: '骰子', label: 'DICE' }, { value: '隐藏', label: 'HIDDEN' }]" 
+                      @update:value="playClick"/>
+                  </div>
 
                   <n-color-picker v-model:value="i.color" :show-alpha="false" show-preview :swatches="colors"
                     :on-update:value="(v) => { colorChanged(v, i); playClick() }" class="w-32" />
                 </div>
               </div>
+              </div>
             </div>
 
             <!-- Control Panel -->
-            <div class="mb-8 border-t border-b border-white py-4">
-              <div class="flex flex-wrap justify-between items-center gap-4">
-                <div class="flex gap-2 flex-wrap">
-                   <retro-button @click="exportRecordRaw">原始文件 // RAW</retro-button>
-                   <retro-button @click="exportRecordDOC">带图WORD // DOC_IMG</retro-button>
-                   <retro-button @click="exportRecordTalkDOC">对话WORD // DOC_TALK</retro-button>
-                   <retro-button @click="exportRecordDocx">标准DOCX // DOCX</retro-button>
-                </div>
+            <div class="mb-8 border-t border-b border-white py-6">
+              <div class="flex flex-col gap-6">
                 
-                <div class="flex gap-4 items-center flex-wrap">
-                  <div class="flex gap-2">
-                    <n-checkbox label="预览 // PREVIEW" v-model:checked="isShowPreview" @click="() => { previewClick('preview'); playClick() }" />
-                    <n-checkbox label="论坛代码 // BBS" v-model:checked="isShowPreviewBBS" @click="() => { previewClick('bbs'); playClick() }" />
-                    <n-checkbox label="多行代码 // MULTI" v-model:checked="isShowPreviewBBSPineapple" @click="() => { previewClick('bbspineapple'); playClick() }" />
-                    <n-checkbox label="回声工坊 // TRG" v-model:checked="isShowPreviewTRG" @click="() => { previewClick('trg'); playClick() }" />
-                  </div>
-                  <n-divider vertical />
-                  <retro-button @click="refreshColors">刷新色板 // REFRESH</retro-button>
+                <!-- Row 1: Export Actions -->
+                <div class="flex flex-col gap-3">
+                   <div class="text-[10px] text-gray-500 font-mono tracking-widest uppercase flex items-center gap-2">
+                      <span class="w-1 h-1 bg-gray-500 rounded-full"></span>
+                      <span>DATA_EXPORT // 数据导出</span>
+                      <div class="h-[1px] flex-1 bg-gray-800"></div>
+                   </div>
+                   <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                     <retro-button @click="exportRecordRaw" class="justify-center h-full">原始文件 // RAW</retro-button>
+                     <retro-button @click="exportRecordDOC" class="justify-center h-full">带图WORD // DOC_IMG</retro-button>
+                     <retro-button @click="exportRecordTalkDOC" class="justify-center h-full">对话WORD // DOC_TALK</retro-button>
+                     <retro-button @click="exportRecordDocx" class="justify-center h-full">标准DOCX // DOCX</retro-button>
+                   </div>
                 </div>
+
+                <!-- Row 2: View & Tools -->
+                <div class="flex flex-col gap-3">
+                   <div class="text-[10px] text-gray-500 font-mono tracking-widest uppercase flex items-center gap-2">
+                      <span class="w-1 h-1 bg-gray-500 rounded-full"></span>
+                      <span>VIEW_CONTROL // 视图控制</span>
+                      <div class="h-[1px] flex-1 bg-gray-800"></div>
+                   </div>
+                   <div class="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                      <div class="flex flex-wrap gap-x-6 gap-y-2">
+                        <n-checkbox label="预览 // PREVIEW" v-model:checked="isShowPreview" @click="() => { previewClick('preview'); playClick() }" />
+                        <n-checkbox label="论坛代码 // BBS" v-model:checked="isShowPreviewBBS" @click="() => { previewClick('bbs'); playClick() }" />
+                        <n-checkbox label="多行代码 // MULTI" v-model:checked="isShowPreviewBBSPineapple" @click="() => { previewClick('bbspineapple'); playClick() }" />
+                        <n-checkbox label="回声工坊 // TRG" v-model:checked="isShowPreviewTRG" @click="() => { previewClick('trg'); playClick() }" />
+                      </div>
+                      
+                      <div class="w-full md:w-auto pt-2 md:pt-0 border-t md:border-t-0 border-gray-800 md:border-l md:pl-6 border-dashed">
+                        <retro-button @click="refreshColors" class="w-full md:w-auto justify-center whitespace-nowrap">重置颜色 // RE-COLOR</retro-button>
+                      </div>
+                   </div>
+                </div>
+
               </div>
             </div>
 
             <!-- Editor Area -->
-            <div class="relative" v-show="!(isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG)">
-              <div :class="isMobile ? 'flex justify-end gap-2 p-2 bg-black border-b border-white' : 'absolute right-0 top-0 z-10 flex gap-2 p-2 bg-black border-b border-l border-white'">
+            <div class="terminal-editor-container relative" v-show="!(isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG)">
+              <div :class="isMobile ? 'flex justify-between items-center p-2 bg-black border-b border-white' : 'absolute right-0 top-0 z-10 flex gap-2 p-2 bg-black border-b border-l border-white'">
+                <div class="flex gap-2">
                  <retro-button @click="clearText" :class="{ '!min-w-0 !px-3': isMobile }">{{ isMobile ? '清空' : '清空 // CLEAR' }}</retro-button>
                  <retro-button @click="doFlush" :class="{ '!min-w-0 !px-3': isMobile }">{{ isMobile ? '刷新' : '刷新 // FLUSH' }}</retro-button>
+                </div>
                  <div class="flex items-center">
                    <n-checkbox :label="isMobile ? '染色' : '染色 // HIGHLIGHT'" v-model:checked="store.doEditorHighlight" size="small" @click="playClick" />
                  </div>
               </div>
-              <code-mirror ref="editor" class="border border-white min-h-[500px]" @change="onChange"></code-mirror>
+              <code-mirror ref="editor" class="min-h-[500px]" @change="onChange"></code-mirror>
             </div>
 
             <!-- Previews -->
@@ -334,8 +405,17 @@ const isShowPreviewTRG = ref(false)
 
 const colors = ref<string[]>([])
 const refreshColors = () => {
+  // Generate a new random color for each PC in the list
+  store.pcList.forEach(pc => {
+    const newColor = randomColor({ luminosity: 'light' });
+    pc.color = newColor;
+    store.pcNameColorMap.set(pc.name, newColor);
+  });
+  store.colorMapSave();
+  
+  // Also refresh the palette for manual selection
   colors.value = randomColor({ count: 16, luminosity: 'light' })
-  message.success("COLORS_REFRESHED", { duration: 800 })
+  message.success("ENTITY_COLORS_RANDOMIZED", { duration: 800 })
 }
 
 const colorChanged = debounce((v: string, i: CharItem) => {
