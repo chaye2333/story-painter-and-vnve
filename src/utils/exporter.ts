@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { saveAs } from 'file-saver';
-import { AlignmentType, Document, Packer, Paragraph, TextRun } from 'docx';
+import type { AlignmentType, Document, Packer, Paragraph, TextRun } from 'docx';
 import { LogItem } from "~/logManager/types";
 import { useStore } from "~/store";
 
@@ -129,65 +129,67 @@ function colorToDocx(color?: string): string | undefined {
   return undefined;
 }
 
-function buildDocxParagraphs(entry: DocxExportEntry): Paragraph[] {
-  const lines = entry.messageLines && entry.messageLines.length > 0 ? [...entry.messageLines] : [''];
-  const firstLine = lines.shift() ?? '';
-  const timeText = (entry.time ?? '').trim();
-  const nicknameText = (entry.nickname ?? '').trim();
+export async function exportFileDocx(entries: DocxExportEntry[], filename = '跑团记录.docx') {
+  const { Document, Packer, Paragraph, TextRun, AlignmentType } = await import('docx');
 
-  const timeColor = colorToDocx(entry.timeColor) ?? '666666';
-  const nicknameColor = colorToDocx(entry.nicknameColor) ?? colorToDocx(entry.messageColor) ?? '333333';
-  const messageColor = colorToDocx(entry.messageColor) ?? nicknameColor;
+  function buildDocxParagraphs(entry: DocxExportEntry) {
+    const lines = entry.messageLines && entry.messageLines.length > 0 ? [...entry.messageLines] : [''];
+    const firstLine = lines.shift() ?? '';
+    const timeText = (entry.time ?? '').trim();
+    const nicknameText = (entry.nickname ?? '').trim();
 
-  const runs: TextRun[] = [];
+    const timeColor = colorToDocx(entry.timeColor) ?? '666666';
+    const nicknameColor = colorToDocx(entry.nicknameColor) ?? colorToDocx(entry.messageColor) ?? '333333';
+    const messageColor = colorToDocx(entry.messageColor) ?? nicknameColor;
 
-  if (timeText) {
-    runs.push(new TextRun({ text: timeText, color: timeColor }));
+    const runs: TextRun[] = [];
+
+    if (timeText) {
+      runs.push(new TextRun({ text: timeText, color: timeColor }));
+    }
+    if (timeText && (nicknameText || firstLine)) {
+      runs.push(new TextRun({ text: ' ' }));
+    }
+    if (nicknameText) {
+      runs.push(new TextRun({ text: nicknameText, color: nicknameColor }));
+    }
+    if (nicknameText && firstLine) {
+      runs.push(new TextRun({ text: ' ' }));
+    }
+    if (firstLine) {
+      runs.push(new TextRun({ text: firstLine, color: messageColor }));
+    }
+
+    if (runs.length === 0) {
+      runs.push(new TextRun({ text: '' }));
+    }
+
+    const continuationIndentTwip = 800; // ~=0.55in -> roughly 3.75 monospace characters
+
+    const paragraphs: Paragraph[] = [
+      new Paragraph({
+        children: runs,
+        spacing: { after: 120 },
+        alignment: AlignmentType.LEFT,
+      }),
+    ];
+
+    lines.forEach((line) => {
+      const childRun = line
+        ? new TextRun({ text: line, color: messageColor })
+        : new TextRun({ text: '' });
+
+      paragraphs.push(new Paragraph({
+        children: [childRun],
+        indent: { left: continuationIndentTwip },
+        spacing: { after: 120 },
+        alignment: AlignmentType.LEFT,
+      }));
+    });
+
+    return paragraphs;
   }
-  if (timeText && (nicknameText || firstLine)) {
-    runs.push(new TextRun({ text: ' ' }));
-  }
-  if (nicknameText) {
-    runs.push(new TextRun({ text: nicknameText, color: nicknameColor }));
-  }
-  if (nicknameText && firstLine) {
-    runs.push(new TextRun({ text: ' ' }));
-  }
-  if (firstLine) {
-    runs.push(new TextRun({ text: firstLine, color: messageColor }));
-  }
 
-  if (runs.length === 0) {
-    runs.push(new TextRun({ text: '' }));
-  }
-
-  const continuationIndentTwip = 800; // ~=0.55in -> roughly 3.75 monospace characters
-
-  const paragraphs: Paragraph[] = [
-    new Paragraph({
-      children: runs,
-      spacing: { after: 120 },
-      alignment: AlignmentType.LEFT,
-    }),
-  ];
-
-  lines.forEach((line) => {
-    const childRun = line
-      ? new TextRun({ text: line, color: messageColor })
-      : new TextRun({ text: '' });
-
-    paragraphs.push(new Paragraph({
-      children: [childRun],
-      indent: { left: continuationIndentTwip },
-      spacing: { after: 120 },
-      alignment: AlignmentType.LEFT,
-    }));
-  });
-
-  return paragraphs;
-}
-
-export function exportFileDocx(entries: DocxExportEntry[], filename = '跑团记录.docx') {
   const children = entries.length > 0
     ? entries.flatMap((entry) => buildDocxParagraphs(entry))
     : [new Paragraph({ children: [new TextRun({ text: '' })], alignment: AlignmentType.LEFT })];

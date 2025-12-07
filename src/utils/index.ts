@@ -37,20 +37,20 @@ export function msgImageFormat(msg: string, options: any, htmlText = false) {
   } else {
     if (htmlText) {
       // [CQ:image,summary=[动画表情],...,file_unique=...]
-      msg = msg.replaceAll(/\[CQ:image(,summary=\[动画表情\])?,[^\]]+?file_unique=([a-zA-Z0-9]{32})\]/g, '<img style="max-width: 300px" src="https://gchat.qpic.cn/gchatpic_new/0/0-0-$2/0?term=2" crossorigin="anonymous" />')
+      msg = msg.replaceAll(/\[CQ:image(,summary=\[动画表情\])?,[^\]]+?file_unique=([a-zA-Z0-9]{32})\]/g, '<img loading="lazy" decoding="async" style="max-width: 300px" src="https://gchat.qpic.cn/gchatpic_new/0/0-0-$2/0?term=2" crossorigin="anonymous" />')
       // [CQ:image,summary=[动画表情],file=...,url=...]
-      msg = msg.replaceAll(/\[CQ:image,summary=\[动画表情\],[^\]]+?url=([^\]]+)\]/g, '<img style="max-width: 300px" src="$1" />')
+      msg = msg.replaceAll(/\[CQ:image,summary=\[动画表情\],[^\]]+?url=([^\]]+)\]/g, '<img loading="lazy" decoding="async" style="max-width: 300px" src="$1" />')
       // [CQ:image,file=...,url=...]
-      msg = msg.replaceAll(/\[CQ:image,[^\]]+?url=([^\]]+)\]/g, '<img style="max-width: 300px" src="$1" />')
+      msg = msg.replaceAll(/\[CQ:image,[^\]]+?url=([^\]]+)\]/g, '<img loading="lazy" decoding="async" style="max-width: 300px" src="$1" />')
       // [CQ:image,file=https?://...]
-      msg = msg.replaceAll(/\[CQ:image,file=(https?:\/\/[^\]]+)\]/g, '<img style="max-width: 300px" src="$1" />')
+      msg = msg.replaceAll(/\[CQ:image,file=(https?:\/\/[^\]]+)\]/g, '<img loading="lazy" decoding="async" style="max-width: 300px" src="$1" />')
       // [CQ:image,file=725BAB58A963A84E1A3BO1F3FCA7F1DF.jpg]
-      msg = msg.replaceAll(/\[CQ:image,file=([A-Za-z0-9]{32,64})(\.[a-zA-Z]+?)\]/g, '<img style="max-width: 300px" src="https://gchat.qpic.cn/gchatpic_new/0/0-0-$1/0?term=2,subType=1" />')
+      msg = msg.replaceAll(/\[CQ:image,file=([A-Za-z0-9]{32,64})(\.[a-zA-Z]+?)\]/g, '<img loading="lazy" decoding="async" style="max-width: 300px" src="https://gchat.qpic.cn/gchatpic_new/0/0-0-$1/0?term=2,subType=1" />')
       // [CQ:image,file=file://C:/UsersAdministrator/Documents/Tencent Files/123/nt_gq/nt_datalPic\2024-03\Ori\53160996bad0f318aef05dfd82cc7f53.jpg]
       msg = msg.replaceAll(/\[CQ:image,file=file:\/\/[^\]]+([A-Za-z0-9]{32})(\.[a-zA-Z]+?)\]/g, (m, p1) => {
-        return `<img style="max-width: 300px" src="https://gchat.qpic.cn/gchatpic_new/0/0-0-${p1.toUpperCase()}/0?term=2,subType=1" />`
+        return `<img loading="lazy" decoding="async" style="max-width: 300px" src="https://gchat.qpic.cn/gchatpic_new/0/0-0-${p1.toUpperCase()}/0?term=2,subType=1" />`
       })
-      msg = msg.replaceAll(/\[CQ:image,file=\{([A-Z0-9]+)-([A-Z0-9]+)-([A-Z0-9]+)-([A-Z0-9]+)-([A-Z0-9]+)}([^\]]+?)\]/g, '<img style="max-width: 300px" src="https://gchat.qpic.cn/gchatpic_new/0/0-0-$1$2$3$4$5/0?term=2" />')
+      msg = msg.replaceAll(/\[CQ:image,file=\{([A-Z0-9]+)-([A-Z0-9]+)-([A-Z0-9]+)-([A-Z0-9]+)-([A-Z0-9]+)}([^\]]+?)\]/g, '<img loading="lazy" decoding="async" style="max-width: 300px" src="https://gchat.qpic.cn/gchatpic_new/0/0-0-$1$2$3$4$5/0?term=2" />')
     }
   }
 
@@ -58,7 +58,7 @@ export function msgImageFormat(msg: string, options: any, htmlText = false) {
     msg = msg.replaceAll(/\[mirai:(image|marketface):[^\]]+\]/g, '')
   } else {
     if (htmlText) {
-      msg = msg.replaceAll(/\[mirai:image:\{([A-Z0-9]+)-([A-Z0-9]+)-([A-Z0-9]+)-([A-Z0-9]+)-([A-Z0-9]+)}([^\]]+?)\]/g, '<img style="max-width: 300px" src="https://gchat.qpic.cn/gchatpic_new/0/0-0-$1$2$3$4$5/0?term=2" />')
+      msg = msg.replaceAll(/\[mirai:image:\{([A-Z0-9]+)-([A-Z0-9]+)-([A-Z0-9]+)-([A-Z0-9]+)-([A-Z0-9]+)}([^\]]+?)\]/g, '<img loading="lazy" decoding="async" style="max-width: 300px" src="https://gchat.qpic.cn/gchatpic_new/0/0-0-$1$2$3$4$5/0?term=2" />')
     }
   }
 
@@ -66,7 +66,7 @@ export function msgImageFormat(msg: string, options: any, htmlText = false) {
     msg = msg.replaceAll(/\[(image|图):[^\]]+\]/g, '')
   } else {
     if (htmlText) {
-      msg = msg.replaceAll(/\[(?:image|图):([^\]]+)?([^\]]+)\]/g, '<img style="max-width: 300px" src="$1" />')
+      msg = msg.replaceAll(/\[(?:image|图):([^\]]+)?([^\]]+)\]/g, '<img loading="lazy" decoding="async" style="max-width: 300px" src="$1" />')
     }
   }
 

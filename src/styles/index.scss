@@ -96,6 +96,7 @@ body {
   z-index: 0;
   pointer-events: none;
   animation: moon-pulse 10s infinite alternate;
+  will-change: transform, opacity;
 }
 
 @keyframes moon-pulse {
@@ -180,6 +181,7 @@ body {
 .glitch-hover {
   position: relative;
   color: white;
+  will-change: transform;
 }
 
 .glitch-hover:hover {
@@ -239,6 +241,7 @@ body {
 /* Keep original glitch-text for compatibility or less intense use */
 .glitch-text {
   position: relative;
+  will-change: transform;
 }
 
 .glitch-text:hover {

@@ -301,7 +301,6 @@ import AudioCore from './components/AudioCore.vue'
 import { debounce, delay } from 'lodash-es'
 import { exportFileRaw, exportFileQQ, exportFileIRC, exportFileDoc, exportFileDocx } from "./utils/exporter";
 import type { DocxExportEntry } from "./utils/exporter";
-import { strFromU8, unzlibSync } from 'fflate';
 import uaParser from 'ua-parser-js'
 
 import { logMan } from './logManager/logManager'
@@ -322,9 +321,6 @@ import { breakpointsTailwind, useBreakpoints, useDark, useToggle, useThrottleFn 
 import OptionView from "./components/OptionView.vue";
 import randomColor from "randomcolor";
 
-import { parquetReadObjects } from 'hyparquet'
-import { asyncBufferFrom } from 'hyperparam'
-import { compressors } from 'hyparquet-compressors'
 import { audioManager } from "./utils/audio";
 import InteractiveGrid from "./components/InteractiveGrid.vue";
 import ParallaxScene from "./components/ParallaxScene.vue";
@@ -566,6 +562,10 @@ onMounted(async () => {
 
       switch (record.client) {
         case 'Parquet': {
+          const { parquetReadObjects } = await import('hyparquet')
+          const { asyncBufferFrom } = await import('hyperparam')
+          const { compressors } = await import('hyparquet-compressors')
+
           const uint8 = Uint8Array.from(atob(record.data), c => c.charCodeAt(0))
           const asyncBuffer = await asyncBufferFrom({ file: new File([uint8], 'default'), byteLength: uint8.byteLength })
           const res = await parquetReadObjects({
@@ -592,6 +592,7 @@ onMounted(async () => {
         case 'SealDice':
         default:
           {
+            const { strFromU8, unzlibSync } = await import('fflate');
             const log = unzlibSync(Uint8Array.from(atob(record.data), c => c.charCodeAt(0)));
 
             nextTick(() => {
