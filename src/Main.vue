@@ -159,7 +159,7 @@
                 <!-- PC List / Character Configuration -->
             <div class="mb-8">
               <h3 class="text-lg font-bold mb-4 uppercase border-b border-white border-dashed inline-block pr-8">
-                实体配置 // ENTITY CONFIG <span class="header-blinker"></span>
+                实体配置 // ENTITY CONFIG
               </h3>
               <div class="pc-list space-y-2 animate-stagger">
                 <div v-for="(i, index) in store.pcList" :key="index" class="flex flex-wrap items-center gap-2 p-2 terminal-card" @mouseenter="playHover">
