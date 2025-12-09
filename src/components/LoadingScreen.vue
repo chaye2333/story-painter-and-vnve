@@ -82,6 +82,18 @@ const enterSystem = () => {
 }
 
 onMounted(() => {
+  // Check for no_intro parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('no_intro') === 'true') {
+    isFinished.value = true;
+    
+    // Clean up URL
+    const newUrl = window.location.pathname;
+    window.history.replaceState({}, '', newUrl);
+    
+    return;
+  }
+
   // Sequence
   setTimeout(() => {
     step.value = 1

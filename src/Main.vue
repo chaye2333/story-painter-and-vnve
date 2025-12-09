@@ -200,6 +200,23 @@
             <div class="mb-8 border-t border-b border-white py-6">
               <div class="flex flex-col gap-6">
                 
+                <!-- Row: Video Processing -->
+                <div class="flex flex-col gap-3">
+                   <div class="text-[10px] text-gray-500 font-mono tracking-widest uppercase flex items-center gap-2">
+                      <span class="w-1 h-1 bg-green-500 rounded-full animate-pulse"></span>
+                      <span>VIDEO_PROC // 视频处理</span>
+                      <div class="h-[1px] flex-1 bg-gray-800"></div>
+                   </div>
+                   <div class="grid grid-cols-2 gap-3">
+               <retro-button @click="openVideoProc" class="justify-center h-full group">
+                  <span class="group-hover:animate-pulse">>> 启动视频处理器 // LAUNCH VIDEO PROCESSOR</span>
+               </retro-button>
+               <retro-button @click="toggleImportToVideoProc" class="justify-center h-full group" :class="{ 'text-green-400': isImportToVideoProc }">
+                  <span class="group-hover:animate-pulse">{{ isImportToVideoProc ? '>> 已启用自动导入 // IMPORT ON' : '>> 启用自动导入 // IMPORT OFF' }}</span>
+               </retro-button>
+             </div>
+                </div>
+
                 <!-- Row 1: Export Actions -->
                 <div class="flex flex-col gap-3">
                    <div class="text-[10px] text-gray-500 font-mono tracking-widest uppercase flex items-center gap-2">
@@ -377,6 +394,32 @@ const scrollToTop = () => {
   } else {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
+}
+
+const isImportToVideoProc = ref(false)
+const toggleImportToVideoProc = () => {
+  isImportToVideoProc.value = !isImportToVideoProc.value
+}
+
+const openVideoProc = () => {
+  if (isImportToVideoProc.value) {
+    showPreview() // Ensure previewItems are up to date
+    const textLines = previewItems.value
+      .filter(item => !item.isRaw && !store.isHiddenLogItem(item))
+      .map(item => {
+        let msg = msgImageFormat(item.message, store.exportOptions);
+        msg = msgAtFormat(msg, store.pcList);
+        msg = msgOffTopicFormat(msg, store.exportOptions, item.isDice);
+        msg = msgCommandFormat(msg, store.exportOptions);
+        msg = msgIMUseridFormat(msg, store.exportOptions, item.isDice);
+        msg = msgOffTopicFormat(msg, store.exportOptions, item.isDice);
+        return `${item.nickname}\n${msg}`
+      })
+      .join('\n\n')
+    localStorage.setItem('vnve_import_text', textLines)
+    message.success('已将文本导入到视频处理器存储中 // TEXT IMPORTED TO VNVE STORAGE')
+  }
+  window.open('/vnve/index.html', '_blank')
 }
 
 onMounted(() => {
