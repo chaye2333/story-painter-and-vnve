@@ -382,7 +382,7 @@ class SoundManager {
     this.noiseNode.start();
   }
 
-  private stopBgm() {
+  public stopBgm() {
     if (this.bgmGain) {
       const now = this.context!.currentTime;
       this.bgmGain.gain.cancelScheduledValues(now);

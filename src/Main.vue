@@ -419,6 +419,12 @@ const openVideoProc = () => {
     localStorage.setItem('vnve_import_text', textLines)
     message.success('已将文本导入到视频处理器存储中 // TEXT IMPORTED TO VNVE STORAGE')
   }
+  
+  // Stop background music to prevent interference with video editor
+  if (isBgmOn.value) {
+    audioManager.stopBgm();
+  }
+  
   window.open('/vnve/index.html', '_blank')
 }
 

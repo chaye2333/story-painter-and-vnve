@@ -382,6 +382,21 @@ export function SceneEditor() {
     };
   }, [initEditor]);
 
+  const handleOpenDraft = () => {
+    const draft = localStorage.getItem("vnve_script_draft");
+    if (draft) {
+      // Temporarily set import text to trigger the dialog logic
+      localStorage.setItem('vnve_import_text', draft);
+      handleOpenImportText2Scene();
+    } else {
+      toast({
+        title: "无草稿",
+        description: "未找到本地保存的剧本草稿",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="flex flex-col gap-2 flex-1">
       <Menubar className="relative z-50">
@@ -411,6 +426,17 @@ export function SceneEditor() {
             <MenubarSeparator />
             <MenubarItem onClick={handleExportDB}>导出作品...</MenubarItem>
             <MenubarItem onClick={handleImportDB}>导入作品...</MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+        <MenubarMenu>
+          <MenubarTrigger className="data-[disabled]:text-gray-400">
+            {isMd && <Icons.fileText className="size-4 mr-0.5"></Icons.fileText>}
+            草稿
+          </MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem onClick={handleOpenDraft}>
+              打开剧本草稿
+            </MenubarItem>
           </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>

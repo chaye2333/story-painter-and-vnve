@@ -23,7 +23,7 @@ import { TextFileEditor } from "@/components//ui/text-file-editor";
 import { useAssetLibrary } from "@/components/hooks/useAssetLibrary";
 import { AssetStateCard } from "@/components/editor/AssetLibrary/AssetCard";
 import { DBAssetType, projectDB } from "@/db";
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { matchJSON } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -219,6 +219,12 @@ export function Text2SceneDialog({
     }
   };
 
+  const handleDeleteCharacter = (name: string) => {
+    const newMap = { ...characterAssetMap };
+    delete newMap[name];
+    setCharacterAssetMap(newMap);
+  };
+
   const handleSelectBackground = async (name: string) => {
     if (loadingText) {
       return;
@@ -230,6 +236,31 @@ export function Text2SceneDialog({
       setBackgroundAssetMap({
         ...backgroundAssetMap,
         [name]: asset,
+      });
+    }
+  };
+
+  const handleSaveDraft = () => {
+    localStorage.setItem("vnve_script_draft", importInputText);
+    toast({
+      title: "保存成功",
+      description: "剧本草稿已保存到本地存储",
+    });
+  };
+
+  const handleLoadDraft = () => {
+    const draft = localStorage.getItem("vnve_script_draft");
+    if (draft) {
+      setImportInputText(draft);
+      toast({
+        title: "加载成功",
+        description: "已加载本地保存的剧本草稿",
+      });
+    } else {
+      toast({
+        title: "无草稿",
+        description: "未找到本地保存的剧本草稿",
+        variant: "destructive",
       });
     }
   };
@@ -305,11 +336,19 @@ export function Text2SceneDialog({
             onComplete={handleImportScreenplay}
             onChangeTemplate={setSceneTemplateName}
           >
-            {type === "ai" && (
-              <Button variant="outline" onClick={() => setStep(step - 1)}>
-                返回
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={handleLoadDraft}>
+                加载草稿
               </Button>
-            )}
+              <Button variant="outline" onClick={handleSaveDraft}>
+                保存草稿
+              </Button>
+              {type === "ai" && (
+                <Button variant="outline" onClick={() => setStep(step - 1)}>
+                  返回
+                </Button>
+              )}
+            </div>
           </TextFileEditor>
         </DialogHeader>
       </>
@@ -342,12 +381,25 @@ export function Text2SceneDialog({
               }
 
               return (
-                <AssetStateCard
-                  key={name}
-                  type={DBAssetType.Character}
-                  state={state}
-                  onSelect={() => handleSelectCharacter(name)}
-                ></AssetStateCard>
+                <div key={name} className="relative group">
+                  <AssetStateCard
+                    type={DBAssetType.Character}
+                    state={state}
+                    onSelect={() => handleSelectCharacter(name)}
+                  ></AssetStateCard>
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    className="absolute -top-1 -right-1 h-6 w-6 rounded-md shadow-md border border-white/50 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110 z-20"
+                    title="删除此角色"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteCharacter(name);
+                    }}
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                </div>
               );
             })}
           </div>
