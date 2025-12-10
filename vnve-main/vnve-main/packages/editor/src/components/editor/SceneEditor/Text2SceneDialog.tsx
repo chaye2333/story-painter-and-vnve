@@ -336,7 +336,7 @@ export function Text2SceneDialog({
             onComplete={handleImportScreenplay}
             onChangeTemplate={setSceneTemplateName}
           >
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <Button variant="outline" onClick={handleLoadDraft}>
                 加载草稿
               </Button>
@@ -475,7 +475,7 @@ export function Text2SceneDialog({
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent
-        className="min-w-[70vw]"
+        className="min-w-[90vw] md:min-w-[70vw] max-h-[90vh] overflow-y-auto"
         onPointerDownOutside={(e) => e.preventDefault()}
       >
         {step > 0 && Steps[step - 1]()}

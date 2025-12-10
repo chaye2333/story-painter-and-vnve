@@ -67,7 +67,7 @@ function SceneSplitter({ value, onChange }: { value: string, onChange: (val: str
       <div className="text-xs text-muted-foreground bg-muted/50 p-2 rounded">
         提示：点击行号旁的 <Plus className="inline w-3 h-3" /> 按钮可以在该行前插入新的场景分割点。点击 <Minus className="inline w-3 h-3" /> 删除分割点。
       </div>
-      <ScrollArea className="h-[400px] w-full border rounded-md relative bg-background">
+      <ScrollArea className="h-[50vh] md:h-[400px] w-full border rounded-md relative bg-background">
         <div className="p-4">
           {lines.map((line, i) => {
              const isHeader = line.trim() === '标题';
@@ -181,13 +181,13 @@ export function TextFileEditor({
           value={value}
           onChange={handleTextareaChange}
           placeholder={placeholder}
-          className="min-h-[400px]"
+          className="min-h-[50vh] md:min-h-[400px]"
           disabled={disabled}
         />
       ) : (
         <SceneSplitter value={value} onChange={onChange} />
       )}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {children ? (
           children
         ) : (
@@ -197,10 +197,10 @@ export function TextFileEditor({
             accept=".txt"
           />
         )}
-        <div className="flex items-center space-x-6">
+        <div className="flex flex-col md:flex-row md:items-center gap-4 md:space-x-6">
           {onChangeTemplate && (
             <div className="flex items-center space-x-2">
-              <span className="text-sm">场景模版:</span>
+              <span className="text-sm whitespace-nowrap">场景模版:</span>
               <Select
                 onValueChange={onChangeTemplate}
                 defaultValue={templates[0].name}
@@ -218,7 +218,7 @@ export function TextFileEditor({
               </Select>
             </div>
           )}
-          <Button onClick={handleComplete} disabled={disabled}>
+          <Button onClick={handleComplete} disabled={disabled} className="w-full md:w-auto">
             {loading && <Loader2 className="animate-spin mr-1" />}
             {loading ? loading : completeButtonLabel || "确定"}
           </Button>
