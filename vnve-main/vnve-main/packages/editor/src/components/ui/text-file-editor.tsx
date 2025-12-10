@@ -67,8 +67,8 @@ function SceneSplitter({ value, onChange }: { value: string, onChange: (val: str
       <div className="text-xs text-muted-foreground bg-muted/50 p-2 rounded">
         提示：点击行号旁的 <Plus className="inline w-3 h-3" /> 按钮可以在该行前插入新的场景分割点。点击 <Minus className="inline w-3 h-3" /> 删除分割点。
       </div>
-      <ScrollArea className="h-[50vh] md:h-[400px] w-full border rounded-md relative bg-background">
-        <div className="p-4">
+      <ScrollArea className="h-[50vh] md:h-[400px] w-full border rounded-md relative bg-background outline-none focus:outline-none focus:ring-0">
+        <div className="p-4 outline-none focus:outline-none">
           {lines.map((line, i) => {
              const isHeader = line.trim() === '标题';
              const isSceneName = i > 0 && lines[i-1].trim() === '标题';
@@ -76,7 +76,7 @@ function SceneSplitter({ value, onChange }: { value: string, onChange: (val: str
              
              return (
                <div key={i} className={cn(
-                 "group flex items-start py-1 px-2 hover:bg-muted/50 rounded transition-colors border-l-2 border-transparent", 
+                 "group flex items-start py-1 px-2 hover:bg-muted/50 rounded transition-colors border-l-2 border-transparent outline-none focus:outline-none focus:ring-0 select-none tap-highlight-transparent", 
                  (isHeader || isSceneName) && "bg-yellow-500/20 font-bold border-l-yellow-500", // Highlight
                  isSplitPoint && "border-t border-t-yellow-500/50 mt-4 pt-2"
                )}>

@@ -475,7 +475,7 @@ export function Text2SceneDialog({
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent
-        className="min-w-[90vw] md:min-w-[70vw] max-h-[90vh] overflow-y-auto"
+        className="min-w-[90vw] md:min-w-[70vw] max-h-[90vh] overflow-y-auto outline-none focus:outline-none focus:ring-0"
         onPointerDownOutside={(e) => e.preventDefault()}
       >
         {step > 0 && Steps[step - 1]()}
