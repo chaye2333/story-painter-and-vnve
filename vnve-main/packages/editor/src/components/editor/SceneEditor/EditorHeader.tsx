@@ -13,9 +13,9 @@ export function EditorHeader() {
     const isDarkMode = document.documentElement.classList.contains("dark");
     setIsDark(isDarkMode);
     if (!document.documentElement.classList.contains("dark") && !document.documentElement.classList.contains("light")) {
-        // Default to dark if not set
-        document.documentElement.classList.add("dark");
-        setIsDark(true);
+        // Default to light if not set
+        document.documentElement.classList.add("light");
+        setIsDark(false);
     }
   }, []);
 

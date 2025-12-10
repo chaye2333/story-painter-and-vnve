@@ -7,21 +7,12 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AudioCore: typeof import('./components/AudioCore.vue')['default']
     CodeMirror: typeof import('./components/CodeMirror.vue')['default']
-    CrowFeather: typeof import('./components/CrowFeather.vue')['default']
-    CustomCursor: typeof import('./components/CustomCursor.vue')['default']
     DownloadModal: typeof import('./components/DownloadModal.vue')['default']
-    GothicBorder: typeof import('./components/GothicBorder.vue')['default']
-    GothicCorner: typeof import('./components/GothicCorner.vue')['default']
-    InteractiveGrid: typeof import('./components/InteractiveGrid.vue')['default']
-    IntroView: typeof import('./components/IntroView.vue')['default']
-    LoadingScreen: typeof import('./components/LoadingScreen.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NCheckbox: typeof import('naive-ui')['NCheckbox']
     NColorPicker: typeof import('naive-ui')['NColorPicker']
     NConfigProvider: typeof import('naive-ui')['NConfigProvider']
-    NDivider: typeof import('naive-ui')['NDivider']
     NIcon: typeof import('naive-ui')['NIcon']
     NInput: typeof import('naive-ui')['NInput']
     NLayout: typeof import('naive-ui')['NLayout']
@@ -33,8 +24,6 @@ declare module 'vue' {
     NSpin: typeof import('naive-ui')['NSpin']
     NTooltip: typeof import('naive-ui')['NTooltip']
     OptionView: typeof import('./components/OptionView.vue')['default']
-    OrnateCorner: typeof import('./components/OrnateCorner.vue')['default']
-    ParallaxScene: typeof import('./components/ParallaxScene.vue')['default']
     PreviewBbs: typeof import('./components/previews/preview-bbs.vue')['default']
     PreviewBbsItem: typeof import('./components/previews/preview-bbs-item.vue')['default']
     PreviewBbsPineapple: typeof import('./components/previews/preview-bbs-pineapple.vue')['default']
@@ -45,7 +34,5 @@ declare module 'vue' {
     PreviewTrg: typeof import('./components/previews/preview-trg.vue')['default']
     PreviewTrgItem: typeof import('./components/previews/preview-trg-item.vue')['default']
     RetroButton: typeof import('./components/RetroButton.vue')['default']
-    SteampunkBackground: typeof import('./components/SteampunkBackground.vue')['default']
-    TypewriterText: typeof import('./components/TypewriterText.vue')['default']
   }
 }

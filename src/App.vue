@@ -1,42 +1,74 @@
 <script setup lang="ts">
 import Main from "~/Main.vue";
-import CustomCursor from "~/components/CustomCursor.vue";
-import LoadingScreen from "~/components/LoadingScreen.vue";
-import { darkTheme, GlobalThemeOverrides } from "naive-ui";
+import { GlobalThemeOverrides, darkTheme } from "naive-ui";
+import { useDark } from "@vueuse/core";
+import { computed } from "vue";
 
-const themeOverrides: GlobalThemeOverrides = {
-  common: {
-    primaryColor: '#ffffff',
-    primaryColorHover: '#cccccc',
-    primaryColorPressed: '#999999',
-    textColorBase: '#ffffff',
-    baseColor: '#000000',
-    bodyColor: '#000000',
-    cardColor: '#000000',
-    modalColor: '#000000',
-    popoverColor: '#000000',
-    fontFamily: '"Share Tech Mono", "Fusion Pixel 12px Monospaced", "Courier New", Courier, monospace',
-  },
-  Button: {
-    textColor: '#ffffff',
-    color: '#000000',
-    border: '1px solid #ffffff',
-    borderRadius: '0px',
-  },
-  Input: {
-    color: '#000000',
-    textColor: '#ffffff',
-    border: '1px solid #ffffff',
-    borderRadius: '0px',
-  },
-}
+const isDark = useDark();
+
+const theme = computed(() => (isDark.value ? darkTheme : null));
+
+const themeOverrides = computed<GlobalThemeOverrides>(() => {
+  if (isDark.value) {
+    return {
+      common: {
+        primaryColor: '#ffffff',
+        primaryColorHover: '#e0e0e0',
+        primaryColorPressed: '#cccccc',
+        textColorBase: '#ffffff',
+        baseColor: '#000000',
+        bodyColor: '#000000',
+        cardColor: '#000000',
+        modalColor: '#000000',
+        popoverColor: '#000000',
+        fontFamily: 'sans-serif',
+      },
+      Button: {
+        textColor: '#ffffff',
+        color: '#000000',
+        border: '1px solid #333333',
+        borderRadius: '0.5rem',
+      },
+      Input: {
+        color: '#000000',
+        textColor: '#ffffff',
+        border: '1px solid #333333',
+        borderRadius: '0.5rem',
+      },
+    }
+  } else {
+    return {
+      common: {
+        primaryColor: '#000000',
+        primaryColorHover: '#333333',
+        primaryColorPressed: '#666666',
+        textColorBase: '#000000',
+        baseColor: '#ffffff',
+        bodyColor: '#ffffff',
+        cardColor: '#ffffff',
+        modalColor: '#ffffff',
+        popoverColor: '#ffffff',
+        fontFamily: 'sans-serif',
+      },
+      Button: {
+        textColor: '#000000',
+        color: '#ffffff',
+        border: '1px solid #cccccc',
+        borderRadius: '0.5rem',
+      },
+      Input: {
+        color: '#ffffff',
+        textColor: '#000000',
+        border: '1px solid #cccccc',
+        borderRadius: '0.5rem',
+      },
+    }
+  }
+})
 </script>
 
 <template>
-  <n-config-provider :theme="darkTheme" :theme-overrides="themeOverrides">
-    <div class="screen-scanlines"></div>
-    <CustomCursor />
-    <LoadingScreen />
+  <n-config-provider :theme="theme" :theme-overrides="themeOverrides">
     <n-message-provider>
       <n-modal-provider>
         <n-notification-provider>

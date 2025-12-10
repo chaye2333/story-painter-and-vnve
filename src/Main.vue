@@ -1,154 +1,44 @@
 <template>
-  <n-layout class="min-h-screen relative overflow-hidden bg-black scrollbar-thin" @scroll="handleScroll">
+  <n-layout class="min-h-screen relative overflow-hidden bg-background text-foreground scrollbar-thin">
     <div id="top-anchor" class="absolute top-0 left-0 w-full h-1 pointer-events-none"></div>
-    <!-- Parallax Background Scene -->
-    <parallax-scene @openIntro="showIntro = true">
-      <template #moon>
-        <div class="black-moon">
-          <div class="moon-crater c1"></div>
-          <div class="moon-crater c2"></div>
-          <div class="moon-crater c3"></div>
-        </div>
-      </template>
-    </parallax-scene>
     
-    <interactive-grid class="opacity-30" />
-    
-    <!-- Retro Header -->
-    <header class="mb-8 relative z-10 pt-6 px-4 md:px-8 pointer-events-none">
-      <!-- Top decorative line (Optional, kept minimal) -->
-      <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-
-      <div class="relative flex flex-col md:flex-row justify-between items-start md:items-end gap-6 pointer-events-none">
-        
-        <!-- Left: Title Section -->
-        <div class="flex flex-col gap-1 relative pointer-events-auto">
-          <!-- Decorative Corner for Title Area -->
-          <div class="absolute -left-4 -top-4 w-8 h-8 border-t border-l border-white/30 hidden md:block"></div>
-
-          <!-- Small decorative label -->
-          <div class="flex items-center gap-2 text-[10px] md:text-xs text-gray-400 font-mono tracking-[0.2em] opacity-70 mb-1 pl-1">
-             <span class="w-1 h-1 bg-green-500 rounded-full animate-pulse"></span>
-             <span>SYSTEM_ONLINE</span>
-             <span class="hidden md:inline">::</span>
-             <span class="hidden md:inline">V2.5.4</span>
-          </div>
-
-          <!-- Main Title -->
-          <h1 class="relative text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none select-none cursor-pointer glitch-hover mix-blend-screen animate-glitch-enter" data-text="Story Painter" @click="reloadPage">
-            <!-- Core text -->
-            <span class="relative z-10 text-transparent bg-clip-text bg-gradient-to-b from-white via-gray-100 to-gray-400 drop-shadow-[0_0_15px_rgba(255,255,255,0.6)] block md:inline md:mr-4">Story</span>
-            <span class="relative z-10 text-transparent bg-clip-text bg-gradient-to-b from-white via-gray-100 to-gray-400 drop-shadow-[0_0_15px_rgba(255,255,255,0.6)] block md:inline">Painter</span>
-            
-            <!-- Decorative elements around title -->
-            <div class="absolute -left-6 top-0 h-full w-1 bg-white/10 hidden md:block"></div>
-          </h1>
-          
-          <!-- Subtitle / Description -->
-          <div class="flex items-center gap-3 mt-3 text-xs md:text-sm font-mono text-gray-300 tracking-widest uppercase pl-1">
-            <span class="bg-white/10 border border-white/20 px-1 text-[10px]">LOG_PROC</span>
-            <span class="opacity-70 text-[10px] md:text-xs">日志处理器 // READY</span>
-            <!-- Decorative line extending right -->
-            <div class="h-[1px] w-12 bg-white/30"></div>
-          </div>
-        </div>
-
-        <!-- Right: Controls & Status (Simplified Background) -->
-        <div class="flex flex-col items-end gap-2 w-full md:w-auto pointer-events-auto">
-          <!-- Decorative metrics (Moved to be very subtle and right-aligned) -->
-          <div class="hidden md:flex gap-4 text-[10px] font-mono text-gray-500/60 tracking-wider">
-            <span>CPU: <span class="text-gray-400">NORMAL</span></span>
-            <span>NET: <span class="text-gray-400">CONNECTED</span></span>
-          </div>
-
-          <!-- Button Group (Transparent background) -->
-          <div class="flex items-center gap-4">
-            <retro-button icon @click="toggleBgm" no-border no-grid class="hover:text-green-400 transition-colors opacity-80 hover:opacity-100">
-              <n-icon size="20">
-                <VolumeUpFilled v-if="isBgmOn" />
-                <VolumeMuteFilled v-else />
-              </n-icon>
-            </retro-button>
-            
-            <retro-button icon @click="openGithub" no-border no-grid class="hover:text-blue-400 transition-colors opacity-80 hover:opacity-100">
-              <n-icon size="20">
-                <logo-github />
-              </n-icon>
-            </retro-button>
-
-            <retro-button @click="backV1" class="!px-2 !py-1 !text-[10px] !h-auto tracking-widest opacity-80 hover:opacity-100" no-border>
-              官网
-            </retro-button>
-          </div>
-        </div>
+    <!-- Header matching VNVE style -->
+    <header class="sticky top-0 z-50 flex h-[53px] items-center justify-between gap-1 border-b border-border bg-background px-4">
+      <div class="flex items-center gap-4">
+        <h1 class="text-xl font-bold text-foreground cursor-pointer tracking-tight" @click="reloadPage">
+          Story Painter
+        </h1>
       </div>
-      
-      <!-- Bottom Divider (Gradient to be less intrusive) -->
-      <div class="w-full h-[1px] bg-gradient-to-r from-white/50 via-white/10 to-transparent mt-6"></div>
+
+      <div class="flex items-center gap-2">
+        <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9" @click="toggleDark()">
+           <n-icon size="20">
+             <moon v-if="isDark" />
+             <sun v-else />
+           </n-icon>
+        </button>
+        
+        <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9" @click="openGithub">
+           <n-icon size="20">
+             <logo-github />
+           </n-icon>
+        </button>
+
+        <button @click="backV1" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 ml-2">
+           官网
+        </button>
+      </div>
     </header>
 
-    <n-layout-content class="px-4 pb-12 bg-transparent relative z-10 pointer-events-none">
-      <div class="max-w-[1200px] mx-auto relative bg-black/90 backdrop-blur-sm animate-scanline-sweep pointer-events-auto p-3 mt-4">
-        <!-- Complex Outer Border Construction -->
-        <div class="absolute inset-0 border-2 border-white/60 pointer-events-none"></div>
-        <div class="absolute inset-[4px] border border-white/30 pointer-events-none"></div>
+    <n-layout-content class="px-4 pb-12 bg-transparent relative z-10">
+      <div class="max-w-[1200px] mx-auto relative bg-background p-3 mt-4">
         
-        <!-- Decorative Corners (Top-Left) -->
-        <div class="absolute -top-1 -left-1 w-4 h-4 bg-black border-t-2 border-l-2 border-white flex items-center justify-center">
-            <div class="w-1 h-1 bg-white"></div>
-        </div>
-        <!-- Decorative Corners (Top-Right) -->
-        <div class="absolute -top-1 -right-1 w-4 h-4 bg-black border-t-2 border-r-2 border-white flex items-center justify-center">
-            <div class="w-1 h-1 bg-white"></div>
-        </div>
-        <!-- Decorative Corners (Bottom-Left) -->
-        <div class="absolute -bottom-1 -left-1 w-4 h-4 bg-black border-b-2 border-l-2 border-white flex items-center justify-center">
-            <div class="w-1 h-1 bg-white"></div>
-        </div>
-        <!-- Decorative Corners (Bottom-Right) -->
-        <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-black border-b-2 border-r-2 border-white flex items-center justify-center">
-            <div class="w-1 h-1 bg-white"></div>
-        </div>
-
-        <!-- Narrative / Introduction Text Area -->
-        <div class="relative px-4 pt-4 pb-0 flex flex-col md:flex-row justify-between items-end gap-4">
-           <div class="text-[10px] md:text-xs text-gray-400 font-mono leading-relaxed opacity-90 tracking-wide flex flex-col gap-2">
-              <div class="flex items-start gap-2 group">
-                  <span class="text-white/40 group-hover:text-white/80 transition-colors mt-[2px] select-none">◆</span>
-                  <p class="min-h-[1.5em]"><TypewriterText ref="tw1" key="tw1" :autoStart="false" text="你推开了门，这里是一间办公室，桌上只有一台老式终端，一轮巨大的月亮正挂在窗外，城镇沉睡着，这里是...现实吗？" :speed="120" :delay="800" @finished="startSecondTyping" /></p>
-                </div>
-                <div class="flex items-start gap-2 group">
-                  <span class="text-gray-600 group-hover:text-gray-400 transition-colors mt-[2px] select-none">◇</span>
-                  <p class="text-gray-500 min-h-[1.5em]">
-                    <TypewriterText v-if="showSecondSentence" key="tw2" text="这里的一切都有股令人怀旧的气息，仿佛有什么被掩埋着。" :speed="120" :delay="1000" />
-                  </p>
-                </div>
-           </div>
-           
-           <!-- Decorative Status Indicators -->
-           <div class="flex gap-1 opacity-50 mb-1">
-               <div class="w-1 h-1 bg-green-500 rounded-full animate-pulse"></div>
-               <div class="w-1 h-1 bg-white/50 rounded-full"></div>
-               <div class="w-1 h-1 bg-white/50 rounded-full"></div>
-           </div>
-        </div>
-
-        <div class="p-6 animate-pulse-glow relative mt-4">
-          <!-- Separator Line between Intro and Main Content -->
-          <div class="w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent mb-6"></div>
-
-          <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-white pb-2 gap-2">
-            <h2 class="text-sm md:text-xl font-bold uppercase animate-typing inline-block align-middle break-all">>> 处理单元 // PROCESSING UNIT <span class="header-blinker"></span></h2>
-            <n-text class="text-xs self-end md:self-auto">SealDice Group: 524364253</n-text>
-          </div>
-
-          <div class="flex flex-col lg:flex-row gap-6 items-start">
+        <!-- Main Content Area -->
+        <div class="relative z-10">
+          <div class="flex flex-col lg:flex-row gap-6 relative">
             <!-- Left Sidebar: Options -->
             <div class="w-full lg:w-1/4 min-w-[280px] flex flex-col gap-6 animate-slide-in-left">
               <option-view></option-view>
-              
-              <!-- Audio Core (Tape + Waveform) -->
-              <audio-core :is-bgm-on="isBgmOn" @toggle="toggleBgm" />
             </div>
 
             <!-- Right Content: Config & Editor -->
@@ -160,94 +50,95 @@
             
                 <!-- PC List / Character Configuration -->
             <div class="mb-8">
-              <h3 class="text-lg font-bold mb-4 uppercase border-b border-white border-dashed inline-block pr-8">
+              <h3 class="text-lg font-bold mb-4 uppercase border-b border-border border-dashed inline-block pr-8">
                 实体配置 // ENTITY CONFIG
               </h3>
               <div class="pc-list space-y-2 animate-stagger">
-                <div v-for="(i, index) in store.pcList" :key="index" class="flex flex-wrap items-center gap-2 p-2 terminal-card" @mouseenter="playHover">
+                <div v-for="(i, index) in store.pcList" :key="index" class="flex flex-wrap items-center gap-2 p-2 rounded-md border border-border bg-card">
                 <div class="flex items-center gap-2">
                    <retro-button class="px-2" @click="deletePc(index, i)"
                     :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG">
                       <n-icon><icon-delete /></n-icon>
                   </retro-button>
 
-                  <div class="retro-input inline-block">
+                  <div class="inline-block">
                     <n-input :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG"
-                      v-model:value="i.name" class="w-40" placeholder="名字 // NAME" @focus="() => { nameFocus(i); playClick() }"
+                      v-model:value="i.name" class="w-40" placeholder="名字 // NAME" @focus="() => { nameFocus(i) }"
                       @change="nameChanged(i)" />
                   </div>
                 </div>
 
-                <div class="retro-input inline-block">
+                <div class="inline-block">
                   <n-input :disabled="true" v-model:value="i.IMUserId" class="w-64" placeholder="ID" />
                 </div>
 
                 <div class="flex items-center gap-2">
-                  <div class="retro-select inline-block">
+                  <div class="inline-block">
                     <n-select v-model:value="i.role" class="w-32"
                       :options="[{ value: '主持人', label: 'KP/HOST' }, { value: '角色', label: 'PL/ACTOR' }, { value: '骰子', label: 'DICE' }, { value: '隐藏', label: 'HIDDEN' }]" 
-                      @update:value="playClick"/>
+                      />
                   </div>
 
                   <n-color-picker v-model:value="i.color" :show-alpha="false" show-preview :swatches="colors"
-                    :on-update:value="(v) => { colorChanged(v, i); playClick() }" class="w-32" />
+                    :on-update:value="(v) => { colorChanged(v, i) }" class="w-32" />
                 </div>
               </div>
               </div>
             </div>
 
             <!-- Control Panel -->
-            <div class="mb-8 border-t border-b border-white py-6">
+            <div class="mb-8 border-t border-b border-border py-6">
               <div class="flex flex-col gap-6">
                 
                 <!-- Row: Video Processing -->
                 <div class="flex flex-col gap-3">
-                   <div class="text-[10px] text-gray-500 font-mono tracking-widest uppercase flex items-center gap-2">
+                   <div class="text-[10px] text-muted-foreground font-mono tracking-widest uppercase flex items-center gap-2">
                       <span class="w-1 h-1 bg-green-500 rounded-full animate-pulse"></span>
+
                       <span>VIDEO_PROC // 视频处理</span>
-                      <div class="h-[1px] flex-1 bg-gray-800"></div>
+                      <div class="h-[1px] flex-1 bg-border"></div>
                    </div>
-                   <div class="grid grid-cols-2 gap-3">
-               <retro-button @click="openVideoProc" class="justify-center h-full group">
-                  <span class="group-hover:animate-pulse">>> 启动视频处理器 // LAUNCH VIDEO PROCESSOR</span>
+                   <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+               <retro-button @click="openVideoProc" class="justify-center h-full group py-3 md:py-2">
+                  <span class="group-hover:animate-pulse">{{ isMobile ? '>> 启动视频处理器' : '>> 启动视频处理器 // LAUNCH VIDEO PROCESSOR' }}</span>
                </retro-button>
-               <retro-button @click="toggleImportToVideoProc" class="justify-center h-full group" :class="{ 'text-green-400': isImportToVideoProc }">
-                  <span class="group-hover:animate-pulse">{{ isImportToVideoProc ? '>> 已启用自动导入 // IMPORT ON' : '>> 启用自动导入 // IMPORT OFF' }}</span>
+               <retro-button @click="toggleImportToVideoProc" class="justify-center h-full group py-3 md:py-2" :class="{ 'text-green-400': isImportToVideoProc }">
+                  <span class="group-hover:animate-pulse">{{ isImportToVideoProc ? (isMobile ? '>> 已启用自动导入' : '>> 已启用自动导入 // IMPORT ON') : (isMobile ? '>> 启用自动导入' : '>> 启用自动导入 // IMPORT OFF') }}</span>
                </retro-button>
              </div>
                 </div>
 
                 <!-- Row 1: Export Actions -->
                 <div class="flex flex-col gap-3">
-                   <div class="text-[10px] text-gray-500 font-mono tracking-widest uppercase flex items-center gap-2">
+                   <div class="text-[10px] text-muted-foreground font-mono tracking-widest uppercase flex items-center gap-2">
                       <span class="w-1 h-1 bg-gray-500 rounded-full"></span>
                       <span>DATA_EXPORT // 数据导出</span>
-                      <div class="h-[1px] flex-1 bg-gray-800"></div>
+                      <div class="h-[1px] flex-1 bg-border"></div>
                    </div>
                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                     <retro-button @click="exportRecordRaw" class="justify-center h-full">原始文件 // RAW</retro-button>
-                     <retro-button @click="exportRecordDOC" class="justify-center h-full">带图WORD // DOC_IMG</retro-button>
-                     <retro-button @click="exportRecordTalkDOC" class="justify-center h-full">对话WORD // DOC_TALK</retro-button>
-                     <retro-button @click="exportRecordDocx" class="justify-center h-full">标准DOCX // DOCX</retro-button>
+                     <retro-button @click="exportRecordRaw" class="justify-center h-full py-3 md:py-2">{{ isMobile ? '原始文件' : '原始文件 // RAW' }}</retro-button>
+                     <retro-button @click="exportRecordDOC" class="justify-center h-full py-3 md:py-2">{{ isMobile ? '带图WORD' : '带图WORD // DOC_IMG' }}</retro-button>
+                     <retro-button @click="exportRecordTalkDOC" class="justify-center h-full py-3 md:py-2">{{ isMobile ? '对话WORD' : '对话WORD // DOC_TALK' }}</retro-button>
+                     <retro-button @click="exportRecordDocx" class="justify-center h-full py-3 md:py-2">{{ isMobile ? '标准DOCX' : '标准DOCX // DOCX' }}</retro-button>
                    </div>
                 </div>
 
                 <!-- Row 2: View & Tools -->
                 <div class="flex flex-col gap-3">
-                   <div class="text-[10px] text-gray-500 font-mono tracking-widest uppercase flex items-center gap-2">
+                   <div class="text-[10px] text-muted-foreground font-mono tracking-widest uppercase flex items-center gap-2">
                       <span class="w-1 h-1 bg-gray-500 rounded-full"></span>
                       <span>VIEW_CONTROL // 视图控制</span>
-                      <div class="h-[1px] flex-1 bg-gray-800"></div>
+                      <div class="h-[1px] flex-1 bg-border"></div>
                    </div>
                    <div class="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
                       <div class="flex flex-wrap gap-x-6 gap-y-2">
-                        <n-checkbox label="预览 // PREVIEW" v-model:checked="isShowPreview" @click="() => { previewClick('preview'); playClick() }" />
-                        <n-checkbox label="论坛代码 // BBS" v-model:checked="isShowPreviewBBS" @click="() => { previewClick('bbs'); playClick() }" />
-                        <n-checkbox label="多行代码 // MULTI" v-model:checked="isShowPreviewBBSPineapple" @click="() => { previewClick('bbspineapple'); playClick() }" />
-                        <n-checkbox label="回声工坊 // TRG" v-model:checked="isShowPreviewTRG" @click="() => { previewClick('trg'); playClick() }" />
+                        <n-checkbox label="预览 // PREVIEW" v-model:checked="isShowPreview" @click="() => { previewClick('preview') }" />
+                        <n-checkbox label="论坛代码 // BBS" v-model:checked="isShowPreviewBBS" @click="() => { previewClick('bbs') }" />
+                        <n-checkbox label="多行代码 // MULTI" v-model:checked="isShowPreviewBBSPineapple" @click="() => { previewClick('bbspineapple') }" />
+                        <n-checkbox label="回声工坊 // TRG" v-model:checked="isShowPreviewTRG" @click="() => { previewClick('trg') }" />
                       </div>
                       
-                      <div class="w-full md:w-auto pt-2 md:pt-0 border-t md:border-t-0 border-gray-800 md:border-l md:pl-6 border-dashed">
+                      <div class="w-full md:w-auto pt-2 md:pt-0 border-t md:border-t-0 border-border md:border-l md:pl-6 border-dashed">
                         <retro-button @click="refreshColors" class="w-full md:w-auto justify-center whitespace-nowrap">重置颜色 // RE-COLOR</retro-button>
                       </div>
                    </div>
@@ -258,13 +149,14 @@
 
             <!-- Editor Area -->
             <div class="terminal-editor-container relative" v-show="!(isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG)">
-              <div :class="isMobile ? 'flex justify-between items-center p-2 bg-black border-b border-white' : 'absolute right-0 top-0 z-10 flex gap-2 p-2 bg-black border-b border-l border-white'">
+              <div :class="isMobile ? 'flex justify-between items-center p-2 bg-card border-b border-border' : 'absolute right-0 top-0 z-10 flex gap-2 p-2 bg-card border-b border-l border-border rounded-bl-lg'">
                 <div class="flex gap-2">
                  <retro-button @click="clearText" :class="{ '!min-w-0 !px-3': isMobile }">{{ isMobile ? '清空' : '清空 // CLEAR' }}</retro-button>
                  <retro-button @click="doFlush" :class="{ '!min-w-0 !px-3': isMobile }">{{ isMobile ? '刷新' : '刷新 // FLUSH' }}</retro-button>
                 </div>
+
                  <div class="flex items-center">
-                   <n-checkbox :label="isMobile ? '染色' : '染色 // HIGHLIGHT'" v-model:checked="store.doEditorHighlight" size="small" @click="playClick" />
+                   <n-checkbox :label="isMobile ? '染色' : '染色 // HIGHLIGHT'" v-model:checked="store.doEditorHighlight" size="small" />
                  </div>
               </div>
               <code-mirror ref="editor" class="min-h-[500px]" @change="onChange"></code-mirror>
@@ -283,22 +175,6 @@
           </div>
         </div>
       </div>
-
-      <footer class="max-w-[1200px] mx-auto border-t border-white/20 p-6 mt-8 bg-black/80 backdrop-blur-sm text-xs text-[#666] relative z-10 pointer-events-auto">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-          <div class="flex flex-col gap-2 items-center md:items-start">
-             <div>QQ反馈群: 241639081</div>
-             <div class="opacity-70 text-center md:text-left">“那颗被放逐至抽象宇宙、遗落在记忆边缘的月亮，<br class="md:hidden" />此刻，你与它坠入同一个地界了”</div>
-          </div>
-          
-          <div class="flex flex-col gap-2 items-center md:items-end">
-             <button @click="scrollToTop" class="hover:text-white transition-colors uppercase tracking-widest cursor-pointer">
-               [ ▲ RETURN_TO_TOP ]
-             </button>
-             <div class="font-mono">{{ currentTime }}</div>
-          </div>
-        </div>
-      </footer>
     </n-layout-content>
     
     <download-modal 
@@ -306,8 +182,6 @@
       :progress="downloadModalProgress" 
       :status="downloadModalStatus" 
     />
-
-    <intro-view v-if="showIntro" @close="showIntro = false" />
   </n-layout>
 </template>
 
@@ -316,8 +190,6 @@ import { nextTick, ref, onMounted, onUnmounted, watch, h, render, renderList, co
 import { useStore } from './store'
 import CodeMirror from './components/CodeMirror.vue'
 import RetroButton from './components/RetroButton.vue'
-import TypewriterText from './components/TypewriterText.vue'
-import AudioCore from './components/AudioCore.vue'
 import { debounce, delay } from 'lodash-es'
 import { exportFileRaw, exportFileQQ, exportFileIRC, exportFileDoc, exportFileDocx } from "./utils/exporter";
 import type { DocxExportEntry } from "./utils/exporter";
@@ -336,22 +208,12 @@ import { LogItem, CharItem, packNameId } from "./logManager/types";
 import { setCharInfo } from './logManager/importers/_logImpoter'
 import { msgCommandFormat, msgImageFormat, msgIMUseridFormat, msgOffTopicFormat, msgAtFormat } from "./utils";
 import { NButton, NText, useMessage, useModal, useNotification } from "naive-ui";
-import { User, LogoGithub, Delete as IconDelete, VolumeUpFilled, VolumeMuteFilled } from '@vicons/carbon'
+import { User, LogoGithub, Delete as IconDelete, Moon, Sun } from '@vicons/carbon'
 import { breakpointsTailwind, useBreakpoints, useDark, useToggle, useThrottleFn } from '@vueuse/core'
 import OptionView from "./components/OptionView.vue";
 import randomColor from "randomcolor";
 
-import { audioManager } from "./utils/audio";
-import InteractiveGrid from "./components/InteractiveGrid.vue";
-import ParallaxScene from "./components/ParallaxScene.vue";
 import DownloadModal from "./components/DownloadModal.vue";
-import IntroView from "./components/IntroView.vue";
-
-const handleScroll = useThrottleFn(() => {
-  audioManager.playGearScroll();
-}, 150);
-
-
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const notMobile = breakpoints.greater('sm')
@@ -367,17 +229,7 @@ const message = useMessage()
 const modal = useModal()
 const notification = useNotification()
 
-const showSecondSentence = ref(false)
-const startSecondTyping = () => {
-  showSecondSentence.value = true
-}
-
-const tw1 = ref<InstanceType<typeof TypewriterText> | null>(null)
-
 const loading = ref<boolean>(false)
-const isBgmOn = ref(false)
-const showIntro = ref(false)
-
 
 const currentTime = ref('')
 let timeInterval: number | null = null
@@ -420,41 +272,18 @@ const openVideoProc = () => {
     message.success('已将文本导入到视频处理器存储中 // TEXT IMPORTED TO VNVE STORAGE')
   }
   
-  // Stop background music to prevent interference with video editor
-  if (isBgmOn.value) {
-    audioManager.stopBgm();
-  }
-  
   window.open('/vnve/index.html', '_blank')
 }
 
 onMounted(() => {
   updateTime()
   timeInterval = window.setInterval(updateTime, 1000)
-  
-  // Start typing animation after Main.vue entry animations (approx 1s)
-  setTimeout(() => {
-    tw1.value?.startTyping()
-  }, 3000)
 })
 
 onUnmounted(() => {
   if (timeInterval) clearInterval(timeInterval)
 })
 
-
-const playHover = () => {
-  audioManager.playHover()
-}
-
-const playClick = () => {
-  audioManager.playClick()
-}
-
-const toggleBgm = () => {
-  playClick()
-  isBgmOn.value = audioManager.toggleBgm()
-}
 
 const isMobile = breakpoints.smaller('lg')
 const downloadUsableRank = ref(0)
@@ -593,11 +422,6 @@ const browserAlert = () => {
 }
 
 onMounted(async () => {
-  isBgmOn.value = audioManager.isPlaying;
-  audioManager.subscribe((playing) => {
-    isBgmOn.value = playing;
-  });
-  
   const params = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop as any)
   })
@@ -1292,272 +1116,6 @@ const code = ref("")
 
 </script>
 
-<style lang="scss">
-.element-plus-logo {
-  width: 50%;
-}
-
-.options>div {
-  width: 30rem;
-  max-width: 30rem;
-  margin-bottom: 2rem;
-}
-
-.options>div>.switch {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &>h4 {
-    margin-top: 0rem;
-    margin-bottom: 0rem;
-    margin-left: 1rem;
-  }
-}
-
-.myLineDecoration {
-  // background: lightblue;
-  margin-bottom: 20px;
-  font-size: large;
-}
-
-.pc-list {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-}
-
-#app {
-  overflow-y: auto;
-}
-
-.preview {
-  word-break: break-all;
-  padding: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
-  position: relative;
-  // font-family: monospace;
-}
-
-
-.list-dynamic {
-  width: 100%;
-  height: 500px;
-  overflow-y: auto;
-}
-
-.list-item-dynamic {
-  // display: flex;
-  // align-items: center;
-  padding: 0.5em 0;
-  border-color: lightgray;
-}
-
-.scroller {
-  height: 95vh;
-}
-
-.black-moon {
-  position: fixed;
-  top: -150px;
-  right: -150px;
-  width: 400px;
-  height: 400px;
-  background: #050505;
-  border-radius: 50%;
-  box-shadow: 
-    0 0 120px rgba(255, 255, 255, 0.4),
-    inset -20px -20px 60px rgba(255, 255, 255, 0.2),
-    0 0 10px rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  z-index: 0;
-  animation: floatAndRotate 60s linear infinite;
-  pointer-events: none;
-}
-
-@media (min-width: 1024px) {
-  .black-moon {
-    width: 700px;
-    height: 700px;
-    top: -250px;
-    right: -250px;
-  }
-}
-
-.moon-crater {
-  position: absolute;
-  background: rgba(30, 30, 30, 1);
-  border-radius: 50%;
-  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.8);
-}
-
-.c1 { top: 65%; left: 15%; width: 5%; height: 5%; }
-.c2 { top: 80%; left: 35%; width: 10%; height: 10%; }
-.c3 { top: 55%; left: 40%; width: 3%; height: 3%; }
-
-@keyframes floatAndRotate {
-  0% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-30px) rotate(90deg); }
-  50% { transform: translateY(0) rotate(180deg); }
-  75% { transform: translateY(-30px) rotate(270deg); }
-  100% { transform: translateY(0) rotate(360deg); }
-}
-
-/* Tape Control Styles */
-.tape-container {
-  width: 100%;
-  height: 160px;
-  position: relative;
-  perspective: 1000px;
-}
-
-.tape-body {
-  width: 100%;
-  height: 100%;
-  background: #1a1a1a;
-  border: 2px solid #444;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.tape-body::before {
-  /* Tape texture/noise */
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-  pointer-events: none;
-}
-
-.tape-body.playing {
-  border-color: #fff;
-  box-shadow: 0 0 20px rgba(255,255,255,0.15);
-}
-
-.tape-label {
-  width: 94%;
-  height: 88%;
-  background: #d0d0d0;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 8px 4px;
-  position: relative;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
-}
-
-.tape-title {
-  font-family: 'Share Tech Mono', monospace;
-  font-weight: bold;
-  font-size: 14px;
-  color: #111;
-  margin-bottom: 10px;
-  letter-spacing: 2px;
-  border-bottom: 2px solid #111;
-  padding-bottom: 2px;
-  width: 90%;
-  text-align: center;
-}
-
-.tape-circles {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-.tape-circle {
-  width: 40px;
-  height: 40px;
-  background: #fff;
-  border: 3px solid #1a1a1a;
-  border-radius: 50%;
-  position: relative;
-  box-shadow: 0 0 0 1px #999;
-}
-
-.tape-circle::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 10px;
-  height: 10px;
-  background: #1a1a1a;
-  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-}
-
-.tape-window {
-  width: 50px;
-  height: 28px;
-  background: #222;
-  border-radius: 2px;
-  border: 1px solid #222;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  overflow: hidden;
-}
-
-.tape-reel {
-  width: 20px;
-  height: 20px;
-  background: #eee;
-  border-radius: 50%;
-  border: 1px solid #666;
-  position: relative;
-  opacity: 0.8;
-}
-
-.tape-reel::before, .tape-reel::after {
-  content: '';
-  position: absolute;
-  background: #444;
-}
-.tape-reel::before { top: 50%; left: 2px; right: 2px; height: 2px; transform: translateY(-50%); }
-.tape-reel::after { left: 50%; top: 2px; bottom: 2px; width: 2px; transform: translateX(-50%); }
-
-.animate-spin-slow {
-  animation: spin 4s linear infinite;
-}
-
-@keyframes floatMoon {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Waveform Visualization */
-.waveform-container {
-  background: rgba(0,0,0,0.5);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.waveform-bars {
-  height: 100%;
-}
-
-.waveform-bar {
-  width: 2px;
-  background: rgba(255,255,255,0.7);
-  transition: height 0.05s ease;
-}
+<style>
+/* Custom animations if needed */
 </style>

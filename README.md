@@ -1,12 +1,20 @@
-# story painter
+# story-painter (Simplified)
 
 ## 关于
 
-本仓库为海豹核心的跑团Log染色器前端源码。
+本仓库为海豹核心的跑团Log染色器前端源码（精简版）。
+移除了所有特殊视觉效果、Intro页面及背景动画，专注于文本处理核心功能。
 
 此仓库的 Issue 已关闭，请在 [sealdice-core](https://github.com/sealdice/sealdice-core/issues) 仓库中提交相关 Issue。
 
 ## 更新日志
+
+### Simplified Version 2025/12/10
+* 移除：Intro页面、背景动画、特殊字体、光标特效
+* 优化：简化主页文本展示，使用标准HTML/CSS
+* 优化：UI风格与VNVE视频编辑器统一，支持深色/浅色模式切换
+* 优化：响应式设计适配
+* 清理：移除未使用的依赖项和资源文件
 
 ### 2.5.4 2025/10/16
 
