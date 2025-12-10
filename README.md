@@ -6,7 +6,7 @@
 
 ◆视频编辑器部分来源于开源项目VNVE——一个制作视觉小说，galgame的项目
 源码地址如下：https://github.com/vnve/vnve
-----------------------------
+
 ◆文本染色器来源于sealdice的开源项目Story-painter——一个对qq聊天记录进行处理的项目
 源码地址如下：https://github.com/sealdice/story-painter
 
